@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+    h2 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <h2>Reservas en tiempo real</h2>
+  {% if reservas %}
+    <table>
+      <thead>
+      <tr>
+        <th>Email</th>
+        <th>Stand</th>
+        <th>Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reservas %}
+        <tr>
+          <td>{{ r.email }}</td>
+          <td>{{ r.stand }}</td>
+          <td>{{ r.tipo }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    </table>
+  {% else %}
+    <p>No hay reservas registradas todavía.</p>
+  {% endif %}
+</body>
+</html>

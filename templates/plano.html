@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plano de Stands</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      display: flex;
+      gap: 40px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(20, 45px);
+      grid-template-rows: repeat(20, 25px);
+      gap: 5px;
+      background: white;
+      padding: 20px;
+      border: 2px solid #ccc;
+      width: max-content;
+    }
+    .stand {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000000;
+      border: 1px solid #333;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .stand:hover {
+      background-color: #6480c5;
+      filter: brightness(0.95);
+    }
+    .stand.selected {
+      background-color: #6480c5;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transform: scale(1.05);
+    }
+    .exhibidor { background: #78c6c2; }
+    .premium { background: #484783; color: #ffffff; }
+    .auspiciador { background: #f6b205; font-size: 22px; }
+    .patrocinador { background: #FF5733; font-size: 22px; }
+    .stand.reservado {
+      background-color: #cccccc !important;
+      color: #666 !important;
+      pointer-events: auto;
+      cursor: not-allowed;
+      opacity: 0.6;
+      border: 1px dashed #888;
+    }
+    .sidebar {
+      width: 250px;
+      background: #ffffff;
+      border: 2px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .legend {
+      margin-bottom: 20px;
+    }
+    .legend div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .legend-box {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+    }
+    .legend-exhibidor { background: #78c6c2; }
+    .legend-premium { background: #484783; }
+    .legend-auspiciador { background: #f6b205; }
+    .legend-patrocinador { background: #FF5733; }
+    .legend-reservado { background: #cccccc; }
+    
+    .selection-info {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .btn-confirm {
+      margin-top: 10px;
+      padding: 10px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      display: none;
+    }
+    .btn-confirm:hover {
+      background: #1976D2;
+    }
+    .timer {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #c0392b;
+    }
+    .separador {
+      width: 20%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .nodo-distribucion {
+      width: 50%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    
+  </style>
+</head>
+<body>
+<div class="grid" id="grid">
+  {% for stand, style, tipo in stands %}
+    <div class="stand {{ tipo }} {% if stand in reservados %}reservado{% endif %}"
+         style="{{ style }}"
+         data-nombre="{{ stand }}">
+      {{ stand }}
+    </div>
+  {% endfor %}
+
+  <!-- Elementos decorativos fuera del loop de stands -->
+  <div style="grid-column: 10 / span 2; grid-row: 5 / span 3; display: flex; justify-content: center;">
+  <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 9 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 13 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 5 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+  
+</div>
+
+
+<div class="sidebar">
+  <h3>Leyenda</h3>
+  <div class="legend">
+    <div><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
+    <div><div class="legend-box legend-premium"></div>Exhibidor Premium</div>
+    <div><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
+    <div><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
+    <div><div class="legend-box legend-reservado"></div>Reservado</div> 
+  </div>
+  <div class="timer" id="timer">Tiempo restante: 05:00</div>
+  <div class="selection-info" id="selectionText">Selecciona un stand</div>
+  <form method="POST">
+    <input type="hidden" name="stand" id="standInput">
+    <button class="btn-confirm" id="confirmBtn">CONFIRMAR</button>
+  </form>
+</div>
+
+<script>
+  const stands = document.querySelectorAll(".stand");
+  const selectionText = document.getElementById("selectionText");
+  const confirmBtn = document.getElementById("confirmBtn");
+  const standInput = document.getElementById("standInput");
+
+  stands.forEach(s => {
+    if (!s.classList.contains('reservado')) {
+      s.addEventListener("click", () => {
+        stands.forEach(e => e.classList.remove("selected"));
+        s.classList.add("selected");
+        const seleccion = s.textContent.trim();
+        selectionText.textContent = `Haz seleccionado el stand ${seleccion}`;
+        confirmBtn.style.display = 'block';
+        standInput.value = seleccion;
+      });
+    }
+  });
+
+  const timerEl = document.getElementById("timer");
+  const startTime = new Date("{{ start_time }}").getTime();
+  const tiempoLimite = {{ tiempo }} * 60 * 1000;
+  const fin = startTime + tiempoLimite;
+
+  function actualizarContador() {
+    const ahora = new Date().getTime();
+    const restante = fin - ahora;
+    if (restante <= 0) {
+      clearInterval(interval);
+      fetch("/expirar", { method: "POST" })
+        .then(res => res.text())
+        .then(url => window.location.href = url);
+    } else {
+      const min = Math.floor(restante / 60000);
+      const sec = Math.floor((restante % 60000) / 1000);
+      timerEl.textContent = `Tiempo restante: ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+  }
+
+  const interval = setInterval(actualizarContador, 1000);
+  actualizarContador();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Espera tu turno</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .card h2 {
+      color: #c0392b;
+      margin-bottom: 20px;
+    }
+    .card p {
+      font-size: 16px;
+      color: #333;
+      margin: 10px 0;
+    }
+    .loader {
+      margin-top: 20px;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <script>
+    function verificarTurno() {
+      location.reload();
+    }
+    window.onload = function() {
+      setInterval(verificarTurno, 10000); // cada 10 segundos
+    };
+  </script>
+</head>
+<body>
+  <div class="card">
+    <h2>⏳ Espera tu turno</h2>
+    <p><strong>Hola {{ email }}</strong></p>
+    <p>Tu prioridad es: <strong>{{ prioridad_usuario }}</strong></p>
+    <p>Actualmente estamos atendiendo la prioridad: <strong>{{ prioridad_actual }}</strong></p>
+    <p>Esta página se actualizará automáticamente hasta que sea tu turno.</p>
+    <div class="loader"></div>
+  </div>
+</body>
+</html>

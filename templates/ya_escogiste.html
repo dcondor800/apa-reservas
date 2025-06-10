@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ya escogiste tu stand</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      color: #c0392b;
+    }
+    .stand {
+      font-size: 22px;
+      color: #007bff;
+      margin: 20px 0;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>✅ Ya escogiste tu stand</h2>
+    <p>Tu participación ya está registrada.</p>
+    <p class="stand">Stand seleccionado: <strong>{{ stand }}</strong></p>
+    <a href="/">Volver al inicio</a>
+  </div>
+</body>
+</html>

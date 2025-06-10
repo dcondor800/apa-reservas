@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Turno expirado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .card h2 {
+      color: #c0392b;
+      margin-bottom: 20px;
+    }
+    .card p {
+      font-size: 16px;
+      color: #333;
+    }
+    .btn-volver {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-volver:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>
+      {% if modo == 'expirado' %}
+        ❌ Tu turno ha expirado
+      {% elif modo == 'reintento' %}
+        ⏳ Ya participaste
+      {% else %}
+        ⚠️ Estado desconocido
+      {% endif %}
+    </h2>
+
+    <p>
+      {% if modo == 'expirado' %}
+        No seleccionaste ningún stand dentro del tiempo asignado. Tu turno fue marcado como expirado.
+      {% elif modo == 'reintento' %}
+        Ya tuviste tu turno y no seleccionaste un stand. Debes esperar a que las demás prioridades finalicen para volver a intentarlo.
+      {% else %}
+        No se pudo determinar el estado de tu participación.
+      {% endif %}
+    </p>
+
+    <a href="/" class="btn-volver">Volver al inicio</a>
+  </div>
+</body>
+</html>
