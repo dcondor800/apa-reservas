@@ -172,41 +172,40 @@ def plano():
     email = session.get('email')
     start_time = session.get('start_time')
 
-    if not email or not start_time:
+    if not start_time or not email:
         return redirect(url_for('index'))
 
     if os.path.exists("reserva_stands.csv"):
         df_reserva = pd.read_csv("reserva_stands.csv")
+        if email in df_reserva['email'].values:
+            stand_reservado = df_reserva[df_reserva['email'] == email]['stand'].values[0]
+            return render_template("ya_escogiste.html", stand=stand_reservado)
     else:
         df_reserva = pd.DataFrame(columns=["email", "stand"])
 
-    reservados = df_reserva['stand'].astype(str).str.strip().tolist()
+    reservados = df_reserva['stand'].tolist()
 
     if request.method == 'POST':
         stand = request.form['stand'].strip()
+
         if stand in reservados:
             return f"El stand {stand} ya fue reservado."
 
         nueva_reserva = pd.DataFrame([[email, stand]], columns=["email", "stand"])
         nueva_reserva.to_csv("reserva_stands.csv", mode='a', header=not os.path.exists("reserva_stands.csv"), index=False)
 
-        # Enviar correo de confirmación
-        try:
-            msg = Message("Confirmación de Reserva de Stand", recipients=[email])
-            msg.body = f"Hola,\n\nHas reservado exitosamente el stand {stand}.\n\nGracias por participar."
-            mail.send(msg)
-        except Exception as e:
-            print(f"Error al enviar el correo: {e}")
+        return render_template('finalizado.html', stand=stand)
 
-        return render_template("finalizado.html", stand=stand)
-
-    return render_template("plano.html",
+    return render_template(
+        'plano.html',
         email=email,
         tiempo=TIEMPO_LIMITE_MINUTOS,
-        start_time=start_time,
         reservados=reservados,
-        stands=stands
+        stands=stands,
+        tiempo_milisegundos=TIEMPO_LIMITE_MINUTOS * 60 * 1000,
+        start_time=start_time  # <- clave para que el temporizador funcione
     )
+
 
 @app.route('/expirar', methods=['POST'])
 def expirar():
