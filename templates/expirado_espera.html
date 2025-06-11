@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
   <title>Turno expirado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f8f9fa;
@@ -10,7 +16,10 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
+
     .card {
       background-color: white;
       padding: 40px;
@@ -20,14 +29,18 @@
       width: 100%;
       max-width: 400px;
     }
+
     .card h2 {
       color: #c0392b;
       margin-bottom: 20px;
     }
+
     .card p {
       font-size: 16px;
       color: #333;
+      margin: 10px 0;
     }
+
     .btn-volver {
       margin-top: 20px;
       background-color: #007bff;
@@ -39,9 +52,34 @@
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
+      font-weight: bold;
     }
+
     .btn-volver:hover {
       background-color: #0056b3;
+    }
+
+    /* Responsive para móviles en orientación vertical */
+    @media (max-width: 600px) and (orientation: portrait) {
+      .card {
+        padding: 25px 20px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .card h2 {
+        font-size: 20px;
+      }
+
+      .card p {
+        font-size: 15px;
+      }
+
+      .btn-volver {
+        width: 100%;
+        font-size: 16px;
+        padding: 14px;
+      }
     }
   </style>
 </head>

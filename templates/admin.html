@@ -3,54 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Panel de Administración</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 40px;
+      margin: 0;
     }
+
     h2 {
       color: #333;
+      text-align: center;
     }
+
+    .table-container {
+      overflow-x: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
+      min-width: 480px;
     }
+
     th, td {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 10px 12px;
       text-align: left;
+      font-size: 15px;
     }
+
     th {
       background: #e0e0e0;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      th, td {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      .table-container {
+        padding: 10px;
+        border-radius: 0;
+        box-shadow: none;
+      }
     }
   </style>
 </head>
 <body>
   <h2>Reservas en tiempo real</h2>
+
   {% if reservas %}
-    <table>
-      <thead>
-      <tr>
-        <th>Email</th>
-        <th>Stand</th>
-        <th>Tipo</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for r in reservas %}
-        <tr>
-          <td>{{ r.email }}</td>
-          <td>{{ r.stand }}</td>
-          <td>{{ r.tipo }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Stand</th>
+            <th>Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reservas %}
+            <tr>
+              <td>{{ r.email }}</td>
+              <td>{{ r.stand }}</td>
+              <td>{{ r.tipo }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
-    <p>No hay reservas registradas todavía.</p>
+    <p style="text-align:center;">No hay reservas registradas todavía.</p>
   {% endif %}
 </body>
 </html>

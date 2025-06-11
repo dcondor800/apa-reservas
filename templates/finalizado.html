@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
   <title>Stand reservado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f8f9fa;
@@ -10,7 +16,10 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
+
     .card {
       background-color: white;
       padding: 40px;
@@ -20,14 +29,23 @@
       width: 100%;
       max-width: 400px;
     }
+
     h2 {
       color: #c0392b;
+      font-size: 22px;
+      margin-bottom: 20px;
     }
+
     .stand {
       font-size: 22px;
       color: #007bff;
       margin: 20px 0;
     }
+
+    p {
+      margin: 10px 0;
+    }
+
     a {
       display: inline-block;
       margin-top: 20px;
@@ -36,9 +54,34 @@
       color: white;
       text-decoration: none;
       border-radius: 5px;
+      font-weight: bold;
     }
+
     a:hover {
       background-color: #0056b3;
+    }
+
+    /* Responsive: móviles verticales */
+    @media (max-width: 600px) and (orientation: portrait) {
+      .card {
+        padding: 25px 20px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .stand {
+        font-size: 18px;
+      }
+
+      a {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+      }
     }
   </style>
 </head>
