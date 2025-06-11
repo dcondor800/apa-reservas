@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plano de Stands</title>
   <style>
     body {
@@ -118,6 +119,68 @@
       object-fit: contain;
       object-position: center;
     }
+
+    /* estilos responsive aquí */
+
+    @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+      padding: 10px;
+      gap: 20px;
+    }
+
+    .grid {
+      overflow-x: auto;
+      max-width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 12px;
+    }
+
+    .sidebar {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 15px;
+    }
+
+    .btn-confirm {
+      font-size: 14px;
+    }
+
+    .selection-info {
+      font-size: 13px;
+    }
+
+    .timer {
+      font-size: 14px;
+    }
+
+    .legend-box {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+    }
+
+    .legend div {
+      font-size: 14px;
+    }
+
+    .stand {
+      font-size: 10px;
+      padding: 2px;
+    }
+
+    .auspiciador,
+    .patrocinador {
+      font-size: 16px;
+    }
+
+    .separador,
+    .nodo-distribucion {
+      width: 60%;
+    }
+  }
+
 
     
   </style>
