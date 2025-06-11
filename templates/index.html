@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
   <title>Reserva de Stand</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f8f9fa;
@@ -10,6 +16,8 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
 
     .card {
@@ -24,6 +32,7 @@
 
     h2 {
       margin-bottom: 20px;
+      font-size: 22px;
     }
 
     input[type="email"] {
@@ -32,6 +41,7 @@
       margin: 15px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
+      font-size: 16px;
     }
 
     button {
@@ -42,6 +52,7 @@
       font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
+      width: 100%;
     }
 
     button:hover {
@@ -52,6 +63,24 @@
       color: red;
       font-weight: bold;
       margin-top: 10px;
+    }
+
+    /* Responsive para móviles en orientación vertical */
+    @media (max-width: 600px) and (orientation: portrait) {
+      .card {
+        padding: 25px 20px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      input[type="email"], button {
+        font-size: 15px;
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -68,3 +97,4 @@
   </div>
 </body>
 </html>
+

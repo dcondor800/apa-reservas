@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Espera tu turno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f8f9fa;
@@ -11,7 +16,10 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
+
     .card {
       background-color: white;
       padding: 40px;
@@ -21,15 +29,19 @@
       width: 100%;
       max-width: 400px;
     }
+
     .card h2 {
       color: #c0392b;
       margin-bottom: 20px;
+      font-size: 24px;
     }
+
     .card p {
       font-size: 16px;
       color: #333;
       margin: 10px 0;
     }
+
     .loader {
       margin-top: 20px;
       border: 6px solid #f3f3f3;
@@ -41,9 +53,33 @@
       margin-left: auto;
       margin-right: auto;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive para móviles en orientación vertical */
+    @media (max-width: 600px) and (orientation: portrait) {
+      .card {
+        padding: 25px 20px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .card h2 {
+        font-size: 20px;
+      }
+
+      .card p {
+        font-size: 15px;
+      }
+
+      .loader {
+        width: 30px;
+        height: 30px;
+        border-width: 4px;
+      }
     }
   </style>
   <script>
