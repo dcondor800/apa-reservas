@@ -175,23 +175,28 @@
   const confirmBtn = document.getElementById("confirmBtn");
   const standInput = document.getElementById("standInput");
 
+  // Manejo de selección de stands
   stands.forEach(s => {
     if (!s.classList.contains('reservado')) {
       s.addEventListener("click", () => {
         stands.forEach(e => e.classList.remove("selected"));
         s.classList.add("selected");
         const seleccion = s.textContent.trim();
-        selectionText.textContent = `Haz seleccionado el stand ${seleccion}`;
+        selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
         confirmBtn.style.display = 'block';
         standInput.value = seleccion;
       });
     }
   });
 
-  const timerEl = document.getElementById("timer");
-  const startTime = new Date("{{ start_time }}").getTime();
-  const tiempoLimite = {{ tiempo }} * 60 * 1000;
+  // Temporizador basado en hora del servidor
+  const rawStart = "{{ start_time }}";
+  console.log("Start_time recibido:", rawStart);
+  const startTime = new Date(rawStart).getTime();
+  const tiempoLimite = {{ tiempo }} * 60 * 1000; // minutos a milisegundos
   const fin = startTime + tiempoLimite;
+
+  const timerEl = document.getElementById("timer");
 
   function actualizarContador() {
     const ahora = new Date().getTime();
@@ -209,8 +214,9 @@
   }
 
   const interval = setInterval(actualizarContador, 1000);
-  actualizarContador();
+  actualizarContador(); // Ejecutar inmediatamente una vez
 </script>
+
 
 </body>
 </html>
