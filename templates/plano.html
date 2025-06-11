@@ -190,9 +190,8 @@
   });
 
   // Temporizador basado en hora del servidor
-  const rawStart = "{{ start_time }}";
-  console.log("Start_time recibido:", rawStart);
-  const startTime = new Date(rawStart).getTime();
+  const startTime = parseInt("{{ start_time }}");
+  console.log("startTime timestamp recibido:", startTime);
   const tiempoLimite = {{ tiempo }} * 60 * 1000; // minutos a milisegundos
   const fin = startTime + tiempoLimite;
 
