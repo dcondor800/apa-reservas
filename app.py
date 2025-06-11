@@ -161,7 +161,7 @@ def espera():
 
     if prioridad_usuario == prioridad_actual:
         if 'start_time' not in session or session.get('email') != email:
-            session['start_time'] = datetime.now().isoformat()
+            session['start_time'] = int(datetime.now().timestamp() * 1000)  # tiempo en milisegundos
         session['email'] = email
         return redirect(url_for('plano'))
 
