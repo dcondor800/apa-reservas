@@ -175,6 +175,7 @@ def plano():
     if not start_time or not email:
         return redirect(url_for('index'))
 
+    # Verifica si el usuario ya reservó un stand
     if os.path.exists("reserva_stands.csv"):
         df_reserva = pd.read_csv("reserva_stands.csv")
         if email in df_reserva['email'].values:
@@ -191,8 +192,18 @@ def plano():
         if stand in reservados:
             return f"El stand {stand} ya fue reservado."
 
+        # Guardar reserva en CSV
         nueva_reserva = pd.DataFrame([[email, stand]], columns=["email", "stand"])
         nueva_reserva.to_csv("reserva_stands.csv", mode='a', header=not os.path.exists("reserva_stands.csv"), index=False)
+
+        # Enviar correo de confirmación
+        try:
+            msg = Message("Confirmación de reserva de stand",
+                          recipients=[email])
+            msg.body = f"Has reservado exitosamente el stand {stand}. Gracias por tu participación."
+            mail.send(msg)
+        except Exception as e:
+            print(f"Error al enviar correo: {e}")
 
         return render_template('finalizado.html', stand=stand)
 
@@ -203,7 +214,7 @@ def plano():
         reservados=reservados,
         stands=stands,
         tiempo_milisegundos=TIEMPO_LIMITE_MINUTOS * 60 * 1000,
-        start_time=start_time  # <- clave para que el temporizador funcione
+        start_time=start_time
     )
 
 
