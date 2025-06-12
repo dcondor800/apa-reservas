@@ -10,8 +10,11 @@
       background: #f5f5f5;
       padding: 20px;
       display: flex;
+      flex-direction: row;
       gap: 40px;
+      flex-wrap: wrap;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(20, 45px);
@@ -22,6 +25,7 @@
       border: 2px solid #ccc;
       width: max-content;
     }
+
     .stand {
       display: flex;
       justify-content: center;
@@ -33,19 +37,23 @@
       cursor: pointer;
       transition: 0.2s;
     }
+
     .stand:hover {
       background-color: #6480c5;
       filter: brightness(0.95);
     }
+
     .stand.selected {
       background-color: #6480c5;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       transform: scale(1.05);
     }
+
     .exhibidor { background: #78c6c2; }
     .premium { background: #484783; color: #ffffff; }
     .auspiciador { background: #f6b205; font-size: 22px; }
     .patrocinador { background: #FF5733; font-size: 22px; }
+
     .stand.reservado {
       background-color: #cccccc !important;
       color: #666 !important;
@@ -54,37 +62,66 @@
       opacity: 0.6;
       border: 1px dashed #888;
     }
+
     .sidebar {
       width: 250px;
       background: #ffffff;
       border: 2px solid #ccc;
       padding: 20px;
       border-radius: 8px;
+      box-sizing: border-box;
     }
+
+    .instrucciones {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .instrucciones h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #2c3e50;
+    }
+
+    .instrucciones ul {
+      padding-left: 18px;
+      list-style-type: disc;
+    }
+
+    .instrucciones li {
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
     .legend {
       margin-bottom: 20px;
     }
+
     .legend div {
       display: flex;
       align-items: center;
       margin-bottom: 8px;
     }
+
     .legend-box {
       width: 20px;
       height: 20px;
       margin-right: 10px;
       border: 1px solid #ccc;
     }
+
     .legend-exhibidor { background: #78c6c2; }
     .legend-premium { background: #484783; }
     .legend-auspiciador { background: #f6b205; }
     .legend-patrocinador { background: #FF5733; }
     .legend-reservado { background: #cccccc; }
-    
+
     .selection-info {
       margin-top: 20px;
       font-size: 14px;
     }
+
     .btn-confirm {
       margin-top: 10px;
       padding: 10px;
@@ -97,15 +134,18 @@
       width: 100%;
       display: none;
     }
+
     .btn-confirm:hover {
       background: #1976D2;
     }
+
     .timer {
       margin-top: 10px;
       font-size: 16px;
       font-weight: bold;
       color: #c0392b;
     }
+
     .separador {
       width: 20%;
       height: 100%;
@@ -120,84 +160,119 @@
       object-position: center;
     }
 
-    /* estilos responsive aquí */
+    .stand.highlighted {
+      transform: scale(1.1);
+      box-shadow: 0 0 8px rgba(71, 70, 70, 0.1);
+      z-index: 2;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+
+    /* Responsive */
     @media (max-width: 768px) {
-    body {
-      flex-direction: column;
-      padding: 10px;
-      gap: 20px;
+      body {
+        flex-direction: column;
+        padding: 10px;
+        gap: 20px;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 15px;
+        border-radius: 0;
+      }
+
+      .grid {
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        font-size: 12px;
+        transform: scale(0.95);
+        transform-origin: top center;
+      }
+
+      .stand {
+        font-size: 10px;
+        padding: 2px;
+      }
+
+      .auspiciador, .patrocinador {
+        font-size: 16px;
+      }
+
+      .legend-box {
+        width: 16px;
+        height: 16px;
+        margin-right: 6px;
+      }
+
+      .legend div {
+        font-size: 14px;
+      }
+
+      .selection-info {
+        font-size: 13px;
+      }
+
+      .timer {
+        font-size: 14px;
+      }
+
+      .btn-confirm {
+        font-size: 14px;
+      }
+
+      .separador, .nodo-distribucion {
+        width: 60%;
+      }
     }
-
-    .grid {
-      overflow-x: auto;
-      max-width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      font-size: 12px;
-    }
-
-    .sidebar {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 15px;
-    }
-
-    .btn-confirm {
-      font-size: 14px;
-    }
-
-    .selection-info {
-      font-size: 13px;
-    }
-
-    .timer {
-      font-size: 14px;
-    }
-
-    .legend-box {
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-    }
-
-    .legend div {
-      font-size: 14px;
-    }
-
-    .stand {
-      font-size: 10px;
-      padding: 2px;
-    }
-
-    .auspiciador,
-    .patrocinador {
-      font-size: 16px;
-    }
-
-    .separador,
-    .nodo-distribucion {
-      width: 60%;
-    }
-  }
-
-
-    
   </style>
 </head>
 <body>
+
+<div class="sidebar">
+  <div class="instrucciones">
+    <h4>🛈 Instrucciones</h4>
+    <ul>
+      <li>Tienes <strong>{{ tiempo }} minutos</strong> para escoger tu stand.</li>
+      <li>Haz clic sobre un stand disponible en el plano.</li>
+      <li>Presiona el botón <strong>CONFIRMAR</strong> para reservarlo.</li>
+      <li>Si el tiempo se agota, perderás tu turno.</li>
+    </ul>
+  </div>
+
+  <h3>Leyenda</h3>
+  <div class="legend">
+    <div data-target="exhibidor"><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
+    <div data-target="premium"><div class="legend-box legend-premium"></div>Exhibidor Premium</div>
+    <div data-target="auspiciador"><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
+    <div data-target="patrocinador"><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
+    <div data-target="reservado"><div class="legend-box legend-reservado"></div>Reservado</div>
+  </div>
+
+
+  <div class="timer" id="timer">Tiempo restante: 05:00</div>
+  <div class="selection-info" id="selectionText">Selecciona un stand</div>
+  <form method="POST">
+    <input type="hidden" name="stand" id="standInput">
+    <button class="btn-confirm" id="confirmBtn">CONFIRMAR</button>
+  </form>
+</div>
+
 <div class="grid" id="grid">
   {% for stand, style, tipo in stands %}
     <div class="stand {{ tipo }} {% if stand in reservados %}reservado{% endif %}"
          style="{{ style }}"
-         data-nombre="{{ stand }}">
+         data-nombre="{{ stand }}"
+         data-tipo="{{ tipo }}">
       {{ stand }}
     </div>
   {% endfor %}
 
-  <!-- Elementos decorativos fuera del loop de stands -->
+  <!-- Elementos decorativos -->
   <div style="grid-column: 10 / span 2; grid-row: 5 / span 3; display: flex; justify-content: center;">
-  <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
   </div>
   <div style="grid-column: 10 / span 2; grid-row: 9 / span 3; display: flex; justify-content: center;">
     <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
@@ -211,25 +286,6 @@
   <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
     <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
   </div>
-  
-</div>
-
-
-<div class="sidebar">
-  <h3>Leyenda</h3>
-  <div class="legend">
-    <div><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
-    <div><div class="legend-box legend-premium"></div>Exhibidor Premium</div>
-    <div><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
-    <div><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
-    <div><div class="legend-box legend-reservado"></div>Reservado</div> 
-  </div>
-  <div class="timer" id="timer">Tiempo restante: 05:00</div>
-  <div class="selection-info" id="selectionText">Selecciona un stand</div>
-  <form method="POST">
-    <input type="hidden" name="stand" id="standInput">
-    <button class="btn-confirm" id="confirmBtn">CONFIRMAR</button>
-  </form>
 </div>
 
 <script>
@@ -238,7 +294,6 @@
   const confirmBtn = document.getElementById("confirmBtn");
   const standInput = document.getElementById("standInput");
 
-  // Manejo de selección de stands
   stands.forEach(s => {
     if (!s.classList.contains('reservado')) {
       s.addEventListener("click", () => {
@@ -252,12 +307,9 @@
     }
   });
 
-  // Temporizador basado en hora del servidor
   const startTime = parseInt("{{ start_time }}");
-  console.log("startTime timestamp recibido:", startTime);
-  const tiempoLimite = {{ tiempo }} * 60 * 1000; // minutos a milisegundos
+  const tiempoLimite = {{ tiempo }} * 60 * 1000;
   const fin = startTime + tiempoLimite;
-
   const timerEl = document.getElementById("timer");
 
   function actualizarContador() {
@@ -276,9 +328,26 @@
   }
 
   const interval = setInterval(actualizarContador, 1000);
-  actualizarContador(); // Ejecutar inmediatamente una vez
-</script>
+  actualizarContador();
 
+  // Efecto grupal desde la leyenda
+  document.querySelectorAll('.legend div[data-target]').forEach(item => {
+    const tipo = item.dataset.target;
+    item.addEventListener('mouseenter', () => {
+      document.querySelectorAll(`.stand.${tipo}`).forEach(stand => {
+        stand.classList.add('highlighted');
+      });
+    });
+    item.addEventListener('mouseleave', () => {
+      document.querySelectorAll(`.stand.${tipo}`).forEach(stand => {
+        stand.classList.remove('highlighted');
+      });
+    });
+  });
+
+
+</script>
 
 </body>
 </html>
+
