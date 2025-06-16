@@ -1,96 +1,230 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Panel de Administración</title>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
   <style>
     body {
       font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 40px;
-      margin: 0;
-    }
-
-    h2 {
-      color: #333;
-      text-align: center;
-    }
-
-    .table-container {
-      overflow-x: auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: #f5f5f5;
       padding: 20px;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(20, 45px);
+      grid-template-rows: repeat(20, 25px);
+      gap: 5px;
+      background: white;
+      padding: 20px;
+      border: 2px solid #ccc;
+      width: max-content;
+    }
+
+    .stand {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000000;
+      border: 1px solid #333;
+    }
+
+    .exhibidor { background: #78c6c2; }
+    .premium { background: #484783; color: #ffffff; }
+    .auspiciador { background: #f6b205; font-size: 22px; }
+    .patrocinador { background: #FF5733; font-size: 22px; }
+
+    .stand.reservado {
+      background-color: #cccccc !important;
+      color: #666 !important;
+      pointer-events: none;
+      opacity: 0.6;
+      border: 1px dashed #888;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #ffffff;
+      border: 2px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .legend {
+      margin-bottom: 20px;
+    }
+
+    .legend div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .legend-box {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .legend-exhibidor { background: #78c6c2; }
+    .legend-premium { background: #484783; }
+    .legend-auspiciador { background: #f6b205; }
+    .legend-patrocinador { background: #FF5733; }
+    .legend-reservado { background: #cccccc; }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    .controls button {
+      margin: 4px 4px 10px 0;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #e0e0e0;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .controls button.active {
+      background: #1976d2;
+      color: white;
+    }
+
+    .stats {
       margin-top: 20px;
     }
 
-    table {
+    .stats p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .download {
       width: 100%;
-      border-collapse: collapse;
-      min-width: 480px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
     }
 
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px 12px;
-      text-align: left;
-      font-size: 15px;
+    .download:hover {
+      background: #218838;
     }
 
-    th {
-      background: #e0e0e0;
-    }
-
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       body {
-        padding: 20px 10px;
+        flex-direction: column;
       }
 
-      h2 {
-        font-size: 20px;
+      .grid {
+        transform: scale(0.95);
+        transform-origin: top center;
+        overflow-x: auto;
+        max-width: 100%;
       }
 
-      th, td {
-        font-size: 14px;
-        padding: 8px;
-      }
-
-      .table-container {
-        padding: 10px;
+      .sidebar {
+        width: 100%;
         border-radius: 0;
-        box-shadow: none;
       }
     }
   </style>
 </head>
 <body>
-  <h2>Reservas en tiempo real</h2>
 
-  {% if reservas %}
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Stand</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for r in reservas %}
-            <tr>
-              <td>{{ r.email }}</td>
-              <td>{{ r.stand }}</td>
-              <td>{{ r.tipo }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<div class="grid" id="grid">
+  {% for stand, style, tipo in stands %}
+    {% set nombre = stand %}
+    {% set reservado = nombre in reservados %}
+    <div class="stand {{ tipo }} {% if reservado %}reservado{% endif %}" style="{{ style }}" data-tipo="{{ tipo }}">
+      {{ nombre }}
     </div>
-  {% else %}
-    <p style="text-align:center;">No hay reservas registradas todavía.</p>
-  {% endif %}
+  {% endfor %}
+
+
+  <!-- Elementos decorativos -->
+  <div style="grid-column: 10 / span 2; grid-row: 5 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 9 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 13 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 5 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+ 
+
+
+  </div>
+
+<div class="sidebar">
+  <h3>Leyenda</h3>
+  <div class="legend">
+    <div><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
+    <div><div class="legend-box legend-premium"></div>Exhibidor Premium</div>
+    <div><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
+    <div><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
+    <div><div class="legend-box legend-reservado"></div>Reservado</div>
+  </div>
+
+  <div class="controls">
+    <button onclick="filtrar('todos')" class="active">Todos</button>
+    <button onclick="filtrar('exhibidor')">Exhibidor</button>
+    <button onclick="filtrar('premium')">Premium</button>
+    <button onclick="filtrar('auspiciador')">Auspiciador</button>
+    <button onclick="filtrar('patrocinador')">Patrocinador</button>
+  </div>
+
+  <div class="stats">
+    <h4>Estadísticas</h4>
+    <p><strong>Total reservas:</strong> {{ reservas|length }}</p>
+    <p><strong>Exhibidor:</strong> {{ conteo.Exhibidor }}</p>
+    <p><strong>Premium:</strong> {{ conteo.Premium }}</p>
+    <p><strong>Auspiciador:</strong> {{ conteo.Auspiciador }}</p>
+    <p><strong>Patrocinador:</strong> {{ conteo.Patrocinador }}</p>
+  </div>
+
+  <form method="get" action="{{ url_for('descargar_csv') }}">
+    <button type="submit" class="download">📥 Descargar CSV</button>
+  </form>
+</div>
+
+<script>
+  function filtrar(tipo) {
+    const botones = document.querySelectorAll(".controls button");
+    botones.forEach(btn => btn.classList.remove("active"));
+    event.target.classList.add("active");
+
+    const stands = document.querySelectorAll(".stand");
+    stands.forEach(s => {
+      const standTipo = s.getAttribute("data-tipo");
+      if (tipo === 'todos' || standTipo === tipo) {
+        s.style.display = 'flex';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+  }
+</script>
+
 </body>
 </html>

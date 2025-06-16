@@ -42,6 +42,7 @@
       background-color: #6480c5;
       filter: brightness(0.95);
     }
+    
 
     .stand.selected {
       background-color: #6480c5;
@@ -286,6 +287,13 @@
   <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
     <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
   </div>
+  <div style="grid-column: 5 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
+ 
 </div>
 
 <script>
@@ -294,19 +302,55 @@
   const confirmBtn = document.getElementById("confirmBtn");
   const standInput = document.getElementById("standInput");
 
-  stands.forEach(s => {
-    if (!s.classList.contains('reservado')) {
-      s.addEventListener("click", () => {
-        stands.forEach(e => e.classList.remove("selected"));
-        s.classList.add("selected");
-        const seleccion = s.textContent.trim();
-        selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
-        confirmBtn.style.display = 'block';
-        standInput.value = seleccion;
+function handleClick(e) {
+  const s = e.currentTarget;
+  if (s.classList.contains('reservado')) return;
+
+  stands.forEach(e => e.classList.remove("selected"));
+  s.classList.add("selected");
+  const seleccion = s.textContent.trim();
+  selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
+  confirmBtn.style.display = 'block';
+  standInput.value = seleccion;
+}
+
+stands.forEach(s => {
+  s.addEventListener("click", handleClick);
+});
+
+  // Validación con AJAX antes de confirmar
+  confirmBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    const stand = standInput.value;
+    if (!stand) return;
+
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Verificando...";
+
+    fetch(`/verificar_disponibilidad/${encodeURIComponent(stand)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.disponible) {
+          document.querySelector("form").submit();
+        } else {
+          alert(`❌ El stand ${stand} ya ha sido reservado por otro usuario.`);
+          selectionText.textContent = "Selecciona un stand";
+          confirmBtn.style.display = 'none';
+          standInput.value = "";
+          stands.forEach(e => e.classList.remove("selected"));
+        }
+      })
+      .catch(error => {
+        alert("Ocurrió un error al verificar la disponibilidad.");
+        console.error(error);
+      })
+      .finally(() => {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "CONFIRMAR";
       });
-    }
   });
 
+  // Timer
   const startTime = parseInt("{{ start_time }}");
   const tiempoLimite = {{ tiempo }} * 60 * 1000;
   const fin = startTime + tiempoLimite;
@@ -346,8 +390,93 @@
   });
 
 
+  function actualizarReservados() {
+  fetch("/estado_stands")
+    .then(res => res.json())
+    .then(reservados => {
+      document.querySelectorAll(".stand").forEach(s => {
+        const nombre = s.dataset.nombre;
+        if (reservados.includes(nombre)) {
+          s.classList.add("reservado");
+          s.classList.remove("selected");
+          s.removeEventListener("click", handleClick);
+          s.style.cursor = "not-allowed";
+        }
+      });
+    });
+}
+
+function handleClick(e) {
+  const s = e.currentTarget;
+  if (!s.classList.contains('reservado')) {
+    stands.forEach(e => e.classList.remove("selected"));
+    s.classList.add("selected");
+    const seleccion = s.textContent.trim();
+    selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
+    confirmBtn.style.display = 'block';
+    standInput.value = seleccion;
+  }
+}
+
+// Vuelve a asignar los eventos a stands activos
+function reactivarEventos() {
+  document.querySelectorAll(".stand:not(.reservado)").forEach(s => {
+    s.addEventListener("click", handleClick);
+  });
+}
+
+// Llama periódicamente a las dos funciones
+setInterval(() => {
+  actualizarReservados();
+  reactivarEventos();
+}, 3000);  // cada 3 segundos
+
+
+//Actualizando estado de reserva de stands
+function actualizarReservados() {
+  fetch("/estado_stands")
+    .then(res => res.json())
+    .then(reservados => {
+      document.querySelectorAll(".stand").forEach(s => {
+        const nombre = s.dataset.nombre;
+        if (reservados.includes(nombre)) {
+          s.classList.add("reservado");
+          s.classList.remove("selected");
+          s.removeEventListener("click", handleClick);
+          s.style.cursor = "not-allowed";
+        }
+      });
+    });
+}
+
+function handleClick(e) {
+  const s = e.currentTarget;
+  if (!s.classList.contains('reservado')) {
+    stands.forEach(e => e.classList.remove("selected"));
+    s.classList.add("selected");
+    const seleccion = s.textContent.trim();
+    selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
+    confirmBtn.style.display = 'block';
+    standInput.value = seleccion;
+  }
+}
+
+// Vuelve a asignar los eventos a stands activos
+function reactivarEventos() {
+  document.querySelectorAll(".stand:not(.reservado)").forEach(s => {
+    s.addEventListener("click", handleClick);
+  });
+}
+
+// Llama periódicamente a las dos funciones
+setInterval(() => {
+  actualizarReservados();
+  reactivarEventos();
+}, 3000);  // cada 3 segundos
+
+
 </script>
+
 
 </body>
 </html>
-
