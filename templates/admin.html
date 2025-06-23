@@ -221,6 +221,22 @@
       }
     });
   }
+
+  function actualizarReservadosAdmin() {
+    fetch("/estado_stands")
+      .then(res => res.json())
+      .then(reservados => {
+        document.querySelectorAll(".stand").forEach(s => {
+          const nombre = s.textContent.trim();
+          if (reservados.includes(nombre)) {
+            s.classList.add("reservado");
+          }
+        });
+      });
+  }
+
+  setInterval(actualizarReservadosAdmin, 3000);  // Actualiza cada 3 segundos
+  actualizarReservadosAdmin(); // Primera llamada al cargar
 </script>
 
 </body>
