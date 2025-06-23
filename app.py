@@ -223,26 +223,40 @@ def plano():
 
             cuerpo_html = f"""
             <html>
-            <body>
-                <p>Hola <strong>{cliente['nombre']}</strong>,</p>
+            <body style="font-family: Arial, sans-serif; font-size: 15px; color: #2A3082; line-height: 1.6;">
+                <p>Estimado:</p>
 
-                <p>Gracias por registrarte en <strong>AVEM 2025</strong>. Esta es la confirmación de tu participación:</p>
+                <p>
+                Nos complace informarte que <strong style="color: #2A3082;">hemos registrado exitosamente la compra de tu espacio</strong> 
+                para el <strong style="color: #E62B0F;">Congreso de Avicultura AVEM 2025</strong>, y queremos agradecerte por ser parte de este gran encuentro 
+                que reunirá a toda la comunidad avícola nacional e internacional, 
+                <strong>los días 12, 13 y 14 de noviembre de 2025</strong>, en el Centro de Convenciones de Lima.
+                </p>
 
-                <ul>
-                    <li><strong>📌 Empresa:</strong> {cliente['empresa']}</li>
-                    <li><strong>📧 Email:</strong> {cliente['email']}</li>
-                    <li><strong>📱 Celular:</strong> {cliente['celular']}</li>
-                    <li><strong>🌎 País:</strong> {cliente['pais']}</li>
-                </ul>
+                <p>
+                👉 <strong style="color: #2A3082;">¿Qué sigue?</strong>
+                </p>
 
-                <p><strong>🟦 Stands reservados:</strong> {', '.join(nuevos)}</p>
+                <p>
+                A partir del <strong>lunes 30 de junio</strong>, nuestro equipo se pondrá en contacto contigo 
+                <strong>para coordinar los siguientes pasos del proceso</strong>. Para cualquier duda o consulta, 
+                no duden en escribirnos a 
+                <strong style="color: #E62B0F;">apaeventos@apa.org.pe</strong>
+                </p>
 
-                <p>Nuestro equipo se pondrá en contacto contigo con los próximos pasos.</p>
+                <p>
+                Tu participación nos fortalece y nos permite seguir construyendo juntos una avicultura sin fronteras.
+                </p>
 
-                <p>Saludos,<br>Equipo AVEM</p>
+                <p>
+                <strong style="color: #2A3082;">¡Nos vemos en el AVEM 2025!</strong>
+                </p>
 
                 <br>
-                <img src="cid:footer_img" style="max-width: 600px; width: 100%; margin-top: 30px;" alt="Footer AVEM" />
+                <p><strong>ASOCIACIÓN PERUANA DE AVICULTURA</strong></p>
+
+                <br>
+                <img src="cid:footer_img" style="max-width: 600px; width: 100%; margin-top: 20px;" alt="Footer AVEM" />
             </body>
             </html>
             """
