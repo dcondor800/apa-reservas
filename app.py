@@ -168,7 +168,7 @@ def plano():
     # Crear archivo con columnas correctas si no existe
     if not os.path.exists("reserva_stands.csv"):
         columnas = ["Nombre", "Empresa", "Email", "Celular", "Pais", "stand1", "stand2", "Hora"]
-        pd.DataFrame(columns=columnas).to_csv("reserva_stands.csv", index=False)
+        pd.DataFrame(columns=columnas).to_csv("reserva_stands.csv", index=False, encoding='utf-8')
 
     # Leer siempre como string para evitar errores como "38.0"
     df = pd.read_csv("reserva_stands.csv", dtype=str)
@@ -214,7 +214,8 @@ def plano():
         }
 
         df.loc[len(df)] = nueva_fila
-        df.to_csv("reserva_stands.csv", index=False)
+        df.to_csv("reserva_stands.csv", index=False, encoding='utf-8')
+
 
         try:
             asunto = "🎫 Confirmación de reserva AVEM 2025"
