@@ -2,44 +2,45 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stand reservado</title>
+  <title>Reserva Confirmada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
+      background-image: url("{{ url_for('static', filename='fondo.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
+        }
 
     .card {
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.95);
       padding: 40px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 450px;
     }
 
     h2 {
-      color: #c0392b;
+      color: #28a745;
       font-size: 22px;
       margin-bottom: 20px;
     }
 
     .stand {
-      font-size: 22px;
-      color: #007bff;
-      margin: 20px 0;
+      font-size: 20px;
+      color: #FF2E00;
+      margin: 15px 0;
     }
 
     p {
@@ -61,7 +62,6 @@
       background-color: #0056b3;
     }
 
-    /* Responsive: móviles verticales */
     @media (max-width: 600px) and (orientation: portrait) {
       .card {
         padding: 25px 20px;
@@ -87,9 +87,15 @@
 </head>
 <body>
   <div class="card">
-    <h2>🎉 Tu stand ha sido separado exitosamente</h2>
-    <p class="stand">Stand seleccionado: <strong>{{ stand }}</strong></p>
-    <p>Nos comunicaremos contigo para finalizar el proceso de pago.</p>
+    <h2>🎉 Tu reserva ha sido registrada con éxito</h2>
+    <p class="stand">
+      {% if ',' in stand %}
+        Stands seleccionados: <strong>{{ stand }}</strong>
+      {% else %}
+        Stand seleccionado: <strong>{{ stand }}</strong>
+      {% endif %}
+    </p>
+    <p>Gracias por participar. Nos comunicaremos contigo para finalizar el proceso.</p>
     <a href="/">Volver al inicio</a>
   </div>
 </body>

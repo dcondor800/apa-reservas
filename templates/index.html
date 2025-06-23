@@ -2,23 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Reserva de Stand</title>
+  <title>Inicio - Registro de Stands</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
+      background-image: url("{{ url_for('static', filename='fondo.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
+        }
 
     .card {
       background-color: white;
@@ -27,74 +28,65 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 450px;
     }
 
     h2 {
+      color: #333;
+      font-size: 24px;
       margin-bottom: 20px;
-      font-size: 22px;
     }
 
-    input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    p {
+      margin: 10px 0 20px;
+      color: #555;
       font-size: 16px;
     }
 
-    button {
+    a.button {
+      display: inline-block;
+      padding: 14px 20px;
       background-color: #007bff;
       color: white;
-      border: none;
-      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
       font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
+      transition: background-color 0.2s ease-in-out;
     }
 
-    button:hover {
+    a.button:hover {
       background-color: #0056b3;
     }
 
-    .error {
-      color: red;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    /* Responsive para móviles en orientación vertical */
-    @media (max-width: 600px) and (orientation: portrait) {
+    @media (max-width: 600px) {
       .card {
         padding: 25px 20px;
+        border-radius: 0;
         box-shadow: none;
-        border: 1px solid #ddd;
       }
 
       h2 {
         font-size: 20px;
       }
 
-      input[type="email"], button {
+      p {
         font-size: 15px;
-        padding: 10px;
+      }
+
+      a.button {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>Ingresa tu correo</h2>
-    <form method="POST">
-      <input type="email" name="email" placeholder="tucorreo@ejemplo.com" required>
-      <button type="submit">Continuar</button>
-    </form>
-    {% if error %}
-      <div class="error">{{ error }}</div>
-    {% endif %}
+    <h2>Bienvenido al Sistema de Registro de Stands</h2>
+    <p>Haz clic en el siguiente botón para registrar un nuevo participante.</p>
+    <a class="button" href="{{ url_for('formulario') }}">Agregar nuevo stand</a>
   </div>
 </body>
 </html>
-

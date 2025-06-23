@@ -11,14 +11,17 @@
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
+      background-image: url("{{ url_for('static', filename='fondo.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
+        }
 
     .card {
       background-color: white;
@@ -60,7 +63,6 @@
       background-color: #0056b3;
     }
 
-    /* Responsive para móviles en orientación vertical */
     @media (max-width: 600px) and (orientation: portrait) {
       .card {
         padding: 25px 20px;
@@ -86,9 +88,24 @@
 </head>
 <body>
   <div class="card">
-    <h2>✅ Ya escogiste tu stand</h2>
-    <p>Tu participación ya está registrada.</p>
-    <p class="stand">Stand seleccionado: <strong>{{ stand }}</strong></p>
+    <h2>⚠️ Email ya registra una reserva</h2>
+    <p>Empresa: <strong>{{ empresa }}</strong></p>
+    <p class="stand">
+      {% if stands is string %}
+        {% set limpia = stands.replace('[','').replace(']','').replace("'", "").strip() %}
+        {% set lista = limpia.split(',') %}
+        {% if lista|length > 1 %}
+          Stands seleccionados: <strong>{{ lista | join(', ') }}</strong>
+        {% else %}
+          Stand seleccionado: <strong>{{ lista[0] }}</strong>
+        {% endif %}
+      {% elif stands is iterable and stands|length > 1 %}
+        Stands seleccionados: <strong>{{ stands | join(', ') }}</strong>
+      {% else %}
+        Stand seleccionado: <strong>{{ stands[0] if stands else '' }}</strong>
+      {% endif %}
+    </p>
+
     <a href="/">Volver al inicio</a>
   </div>
 </body>

@@ -3,17 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <title>Plano de Stands</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      background-image: url("{{ url_for('static', filename='fondo.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
       padding: 20px;
       display: flex;
-      flex-direction: row;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
+      justify-content: center;
+      align-items: center;
+      }
 
     .grid {
       display: grid;
@@ -24,6 +30,7 @@
       padding: 20px;
       border: 2px solid #ccc;
       width: max-content;
+      padding-top: 50px;
     }
 
     .stand {
@@ -32,7 +39,7 @@
       align-items: center;
       font-size: 14px;
       font-weight: bold;
-      color: #000000;
+      color: #000;
       border: 1px solid #333;
       cursor: pointer;
       transition: 0.2s;
@@ -40,9 +47,7 @@
 
     .stand:hover {
       background-color: #6480c5;
-      filter: brightness(0.95);
     }
-    
 
     .stand.selected {
       background-color: #6480c5;
@@ -51,15 +56,15 @@
     }
 
     .exhibidor { background: #78c6c2; }
-    .premium { background: #484783; color: #ffffff; }
+    .premium { background: #484783; color: #fff; }
     .auspiciador { background: #f6b205; font-size: 22px; }
     .patrocinador { background: #FF5733; font-size: 22px; }
 
     .stand.reservado {
       background-color: #cccccc !important;
       color: #666 !important;
-      pointer-events: auto;
       cursor: not-allowed;
+      pointer-events: none;
       opacity: 0.6;
       border: 1px dashed #888;
     }
@@ -70,39 +75,62 @@
       border: 2px solid #ccc;
       padding: 20px;
       border-radius: 8px;
-      box-sizing: border-box;
     }
 
     .instrucciones {
+      background-color: #f0f4f8;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
       font-size: 14px;
       color: #333;
-      margin-bottom: 20px;
     }
 
     .instrucciones h4 {
+      margin-top: 0;
       margin-bottom: 10px;
-      font-size: 16px;
-      color: #2c3e50;
+      font-size: 15px;
+      color: #902c0e;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
     }
 
     .instrucciones ul {
       padding-left: 18px;
-      list-style-type: disc;
+      margin: 0;
     }
 
     .instrucciones li {
-      margin-bottom: 8px;
-      line-height: 1.4;
+      margin-bottom: 6px;
+      font-size: 13px;
     }
 
+
     .legend {
+      background-color: #f0f4f8;
+      border: 1px solid #ccc;
+      padding: 15px;
       margin-bottom: 20px;
-    }
+      margin-top: 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+  }
+
+    .legend h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #902c0e;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+      }
 
     .legend div {
       display: flex;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
 
     .legend-box {
@@ -110,18 +138,49 @@
       height: 20px;
       margin-right: 10px;
       border: 1px solid #ccc;
+      flex-shrink: 0;
     }
 
-    .legend-exhibidor { background: #78c6c2; }
-    .legend-premium { background: #484783; }
-    .legend-auspiciador { background: #f6b205; }
-    .legend-patrocinador { background: #FF5733; }
-    .legend-reservado { background: #cccccc; }
+  .legend-exhibidor { background: #78c6c2; }
+  .legend-premium { background: #484783; }
+  .legend-auspiciador { background: #f6b205; }
+  .legend-patrocinador { background: #FF5733; }
+  .legend-reservado { background: #cccccc; }
 
     .selection-info {
       margin-top: 20px;
       font-size: 14px;
     }
+
+    .resumen-cliente {
+      background-color: #f0f4f8;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .resumen-cliente h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #902c0e;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .resumen-cliente p {
+      margin: 4px 0;
+      font-size: 13px;
+    }
+
+    .icono-cliente {
+      color: #0e900e!important;
+      margin-right: 6px;
+    }
+
 
     .btn-confirm {
       margin-top: 10px;
@@ -136,10 +195,6 @@
       display: none;
     }
 
-    .btn-confirm:hover {
-      background: #1976D2;
-    }
-
     .timer {
       margin-top: 10px;
       font-size: 16px;
@@ -147,85 +202,18 @@
       color: #c0392b;
     }
 
-    .separador {
-      width: 20%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-    }
-
-    .nodo-distribucion {
-      width: 50%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-    }
-
-    .stand.highlighted {
-      background-color: #ffe9b3 !important;
-      border: 2px dashed #ff9900;
-      color: #333;
-      transition: background-color 0.2s ease, border 0.2s ease;
-}
-
-
-    /* Responsive */
     @media (max-width: 768px) {
       body {
         flex-direction: column;
-        padding: 10px;
-        gap: 20px;
       }
 
       .sidebar {
         width: 100%;
-        padding: 15px;
-        border-radius: 0;
       }
 
       .grid {
-        overflow-x: auto;
-        max-width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        font-size: 12px;
-        transform: scale(0.95);
-        transform-origin: top center;
-      }
-
-      .stand {
-        font-size: 10px;
-        padding: 2px;
-      }
-
-      .auspiciador, .patrocinador {
-        font-size: 16px;
-      }
-
-      .legend-box {
-        width: 16px;
-        height: 16px;
-        margin-right: 6px;
-      }
-
-      .legend div {
-        font-size: 14px;
-      }
-
-      .selection-info {
-        font-size: 13px;
-      }
-
-      .timer {
-        font-size: 14px;
-      }
-
-      .btn-confirm {
-        font-size: 14px;
-      }
-
-      .separador, .nodo-distribucion {
-        width: 60%;
+        transform: scale(0.9);
+        transform-origin: top left;
       }
     }
   </style>
@@ -233,32 +221,44 @@
 <body>
 
 <div class="sidebar">
+  
   <div class="instrucciones">
     <h4>🛈 Instrucciones</h4>
     <ul>
-      <li>Tienes <strong>{{ tiempo }} minutos</strong> para escoger tu stand.</li>
-      <li>Haz clic sobre un stand disponible en el plano.</li>
-      <li>Presiona el botón <strong>CONFIRMAR</strong> para reservarlo.</li>
-      <li>Si el tiempo se agota, perderás tu turno.</li>
+      <li>Escoge 1 o 2 stands como máximo</li>
+      <li>Haz clic sobre los stands disponibles.</li>
+      <li>Presiona <strong>CONFIRMAR</strong> para completar tu reserva.</li>
     </ul>
   </div>
 
-  <h3>Leyenda</h3>
-  <div class="legend">
-    <div data-target="exhibidor"><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
-    <div data-target="premium"><div class="legend-box legend-premium"></div>Exhibidor Premium</div>
-    <div data-target="auspiciador"><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
-    <div data-target="patrocinador"><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
-    <div data-target="reservado"><div class="legend-box legend-reservado"></div>Reservado</div>
+
+  <div class="resumen-cliente">
+    <h4><i class="fas fa-user" style="color: #902c0e; margin-right: 8px;"></i>Cliente</h4>
+    <p><strong>Nombre:</strong> {{ cliente.nombre }}</p>
+    <p><strong>Empresa:</strong> {{ cliente.empresa }}</p>
+    <p><strong>Email:</strong> {{ cliente.email }}</p>
+    <p><strong>Celular:</strong> {{ cliente.celular }}</p>
+    <p><strong>País:</strong> {{ cliente.pais }}</p>
   </div>
 
 
-  <div class="timer" id="timer">Tiempo restante: 05:00</div>
-  <div class="selection-info" id="selectionText">Selecciona un stand</div>
-  <form method="POST">
-    <input type="hidden" name="stand" id="standInput">
-    <button class="btn-confirm" id="confirmBtn">CONFIRMAR</button>
-  </form>
+  <div class="legend">
+    <h4>📌 Leyenda</h4>
+    <div><div class="legend-box legend-exhibidor"></div>Exhibidor</div>
+    <div><div class="legend-box legend-premium"></div>Premium</div>
+    <div><div class="legend-box legend-auspiciador"></div>Auspiciador</div>
+    <div><div class="legend-box legend-patrocinador"></div>Patrocinador</div>
+    <div><div class="legend-box legend-reservado"></div>Reservado</div>
+  </div>
+
+
+  {% if session.get('cliente') %}
+    <div class="selection-info" id="selectionText">Selecciona hasta 2 stands</div>
+    <form method="POST">
+      <input type="hidden" name="stands" id="standInput">
+      <button class="btn-confirm" id="confirmBtn">CONFIRMAR</button>
+    </form>
+  {% endif %}
 </div>
 
 <div class="grid" id="grid">
@@ -270,213 +270,93 @@
       {{ stand }}
     </div>
   {% endfor %}
-
-  <!-- Elementos decorativos -->
-  <div style="grid-column: 10 / span 2; grid-row: 5 / span 3; display: flex; justify-content: center;">
-    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
-  </div>
-  <div style="grid-column: 10 / span 2; grid-row: 9 / span 3; display: flex; justify-content: center;">
-    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
-  </div>
-  <div style="grid-column: 10 / span 2; grid-row: 13 / span 3; display: flex; justify-content: center;">
-    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
-  </div>
-  <div style="grid-column: 5 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
-    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
-  </div>
-  <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
-    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
-  </div>
-  <div style="grid-column: 5 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
-    <img class="nodo-distribucion" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
-  </div>
-  <div style="grid-column: 14 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
-    <img class="nodo-distribucion" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
-  </div>
- 
 </div>
 
 <script>
-  const stands = document.querySelectorAll(".stand");
-  const selectionText = document.getElementById("selectionText");
-  const confirmBtn = document.getElementById("confirmBtn");
-  const standInput = document.getElementById("standInput");
+  const clienteActivo = {{ 'true' if session.get('cliente') else 'false' }};
+  if (clienteActivo) {
+    const stands = document.querySelectorAll(".stand");
+    const selectionText = document.getElementById("selectionText");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const standInput = document.getElementById("standInput");
+    let seleccionados = [];
 
-function handleClick(e) {
-  const s = e.currentTarget;
-  if (s.classList.contains('reservado')) return;
+    function actualizarUI() {
+      selectionText.textContent = seleccionados.length === 0
+        ? "Selecciona hasta 2 stands"
+        : `Seleccionados: ${seleccionados.join(" y ")}`;
+      confirmBtn.style.display = seleccionados.length > 0 ? 'block' : 'none';
+      standInput.value = seleccionados.join(",");
+    }
 
-  stands.forEach(e => e.classList.remove("selected"));
-  s.classList.add("selected");
-  const seleccion = s.textContent.trim();
-  selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
-  confirmBtn.style.display = 'block';
-  standInput.value = seleccion;
-}
+    function handleClick(e) {
+      const s = e.currentTarget;
+      if (s.classList.contains("reservado")) return;
 
-stands.forEach(s => {
-  s.addEventListener("click", handleClick);
-});
+      const nombre = s.dataset.nombre;
+      if (seleccionados.includes(nombre)) {
+        seleccionados = seleccionados.filter(x => x !== nombre);
+        s.classList.remove("selected");
+      } else if (seleccionados.length < 2) {
+        seleccionados.push(nombre);
+        s.classList.add("selected");
+      } else {
+        alert("Solo puedes seleccionar hasta 2 stands.");
+      }
+      actualizarUI();
+    }
 
-  // Validación con AJAX antes de confirmar
-  confirmBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    const stand = standInput.value;
-    if (!stand) return;
+    stands.forEach(s => s.addEventListener("click", handleClick));
 
-    confirmBtn.disabled = true;
-    confirmBtn.textContent = "Verificando...";
+    confirmBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (seleccionados.length === 0) return;
 
-    fetch(`/verificar_disponibilidad/${encodeURIComponent(stand)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.disponible) {
-          document.querySelector("form").submit();
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Verificando...";
+
+      Promise.all(seleccionados.map(nombre =>
+        fetch(`/verificar_disponibilidad/${encodeURIComponent(nombre)}`).then(res => res.json())
+      )).then(resultados => {
+        const yaReservados = seleccionados.filter((_, i) => !resultados[i].disponible);
+        if (yaReservados.length > 0) {
+          alert("❌ Algunos stands ya fueron reservados: " + yaReservados.join(", "));
+          location.reload();
         } else {
-          alert(`❌ El stand ${stand} ya ha sido reservado por otro usuario.`);
-          selectionText.textContent = "Selecciona un stand";
-          confirmBtn.style.display = 'none';
-          standInput.value = "";
-          stands.forEach(e => e.classList.remove("selected"));
+          document.querySelector("form").submit();
         }
-      })
-      .catch(error => {
-        alert("Ocurrió un error al verificar la disponibilidad.");
-        console.error(error);
-      })
-      .finally(() => {
+      }).catch(err => {
+        alert("Error al verificar disponibilidad.");
+        console.error(err);
+      }).finally(() => {
         confirmBtn.disabled = false;
         confirmBtn.textContent = "CONFIRMAR";
       });
-  });
+    });
 
-  // Timer
-  const startTime = parseInt("{{ start_time }}");
-  const tiempoLimite = {{ tiempo }} * 60 * 1000;
-  const fin = startTime + tiempoLimite;
-  const timerEl = document.getElementById("timer");
-
-  function actualizarContador() {
-    const ahora = new Date().getTime();
-    const restante = fin - ahora;
-    if (restante <= 0) {
-      clearInterval(interval);
-      fetch("/expirar", { method: "POST" })
-        .then(res => res.text())
-        .then(url => window.location.href = url);
-    } else {
-      const min = Math.floor(restante / 60000);
-      const sec = Math.floor((restante % 60000) / 1000);
-      timerEl.textContent = `Tiempo restante: ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    // Actualización automática de stands reservados
+    function actualizarReservados() {
+      fetch("/estado_stands")
+        .then(res => res.json())
+        .then(reservados => {
+          document.querySelectorAll(".stand").forEach(s => {
+            const nombre = s.dataset.nombre;
+            if (reservados.includes(nombre)) {
+              s.classList.add("reservado");
+              s.classList.remove("selected");
+              s.removeEventListener("click", handleClick);
+              s.style.cursor = "not-allowed";
+              seleccionados = seleccionados.filter(x => x !== nombre);
+              actualizarUI();
+            }
+          });
+        });
     }
+
+    setInterval(actualizarReservados, 3000);
+    actualizarReservados();
   }
-
-  const interval = setInterval(actualizarContador, 1000);
-  actualizarContador();
-
-  // Efecto grupal desde la leyenda
-  document.querySelectorAll('.legend div[data-target]').forEach(item => {
-    const tipo = item.dataset.target;
-    item.addEventListener('mouseenter', () => {
-      document.querySelectorAll(`.stand.${tipo}`).forEach(stand => {
-        stand.classList.add('highlighted');
-      });
-    });
-    item.addEventListener('mouseleave', () => {
-      document.querySelectorAll(`.stand.${tipo}`).forEach(stand => {
-        stand.classList.remove('highlighted');
-      });
-    });
-  });
-
-
-  function actualizarReservados() {
-  fetch("/estado_stands")
-    .then(res => res.json())
-    .then(reservados => {
-      document.querySelectorAll(".stand").forEach(s => {
-        const nombre = s.dataset.nombre;
-        if (reservados.includes(nombre)) {
-          s.classList.add("reservado");
-          s.classList.remove("selected");
-          s.removeEventListener("click", handleClick);
-          s.style.cursor = "not-allowed";
-        }
-      });
-    });
-}
-
-function handleClick(e) {
-  const s = e.currentTarget;
-  if (!s.classList.contains('reservado')) {
-    stands.forEach(e => e.classList.remove("selected"));
-    s.classList.add("selected");
-    const seleccion = s.textContent.trim();
-    selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
-    confirmBtn.style.display = 'block';
-    standInput.value = seleccion;
-  }
-}
-
-// Vuelve a asignar los eventos a stands activos
-function reactivarEventos() {
-  document.querySelectorAll(".stand:not(.reservado)").forEach(s => {
-    s.addEventListener("click", handleClick);
-  });
-}
-
-// Llama periódicamente a las dos funciones
-setInterval(() => {
-  actualizarReservados();
-  reactivarEventos();
-}, 3000);  // cada 3 segundos
-
-
-//Actualizando estado de reserva de stands
-function actualizarReservados() {
-  fetch("/estado_stands")
-    .then(res => res.json())
-    .then(reservados => {
-      document.querySelectorAll(".stand").forEach(s => {
-        const nombre = s.dataset.nombre;
-        if (reservados.includes(nombre)) {
-          s.classList.add("reservado");
-          s.classList.remove("selected");
-          s.removeEventListener("click", handleClick);
-          s.style.cursor = "not-allowed";
-        }
-      });
-    });
-}
-
-function handleClick(e) {
-  const s = e.currentTarget;
-  if (!s.classList.contains('reservado')) {
-    stands.forEach(e => e.classList.remove("selected"));
-    s.classList.add("selected");
-    const seleccion = s.textContent.trim();
-    selectionText.textContent = `Has seleccionado el stand ${seleccion}`;
-    confirmBtn.style.display = 'block';
-    standInput.value = seleccion;
-  }
-}
-
-// Vuelve a asignar los eventos a stands activos
-function reactivarEventos() {
-  document.querySelectorAll(".stand:not(.reservado)").forEach(s => {
-    s.addEventListener("click", handleClick);
-  });
-}
-
-// Llama periódicamente a las dos funciones
-setInterval(() => {
-  actualizarReservados();
-  reactivarEventos();
-}, 3000);  // cada 3 segundos
-
-
 </script>
-
 
 </body>
 </html>

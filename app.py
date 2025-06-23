@@ -1,27 +1,27 @@
-# Importaciones necesarias
-from flask import Flask, render_template, request, redirect, url_for, session, send_file, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, jsonify, flash
 from flask_mail import Mail, Message
 from datetime import datetime
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 import pandas as pd
 import os
 
-# Configuración básica de Flask
 app = Flask(__name__)
-app.secret_key = 'clave_supersecreta'  # Llave secreta para manejar sesiones
-TIEMPO_LIMITE_MINUTOS = 5  # Tiempo máximo para que un usuario elija su stand
+app.secret_key = 'clave_supersecreta'
 
-# Configuración para el envío de correos con Flask-Mail
+# Tiempo límite en minutos
+TIEMPO_LIMITE_MINUTOS = 5
+
+# Configuración del correo
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'dcondor79@gmail.com'
-app.config['MAIL_PASSWORD'] = 'jiab sppf msnh bfqm'
-app.config['MAIL_DEFAULT_SENDER'] = 'dcondor79@gmail.com'
-
+app.config['MAIL_USERNAME'] = 'avem.inscripciones@apa.org.pe'
+app.config['MAIL_PASSWORD'] = 'kofr rgyf qbev rfvv'
+app.config['MAIL_DEFAULT_SENDER'] = 'avem.inscripciones@apa.org.pe'
 mail = Mail(app)
 
-# Definición de todos los stands en el plano
-# Cada stand contiene: nombre, estilo CSS (posición en el grid), y tipo
+# Lista de stands (nombre, estilo CSS, tipo)
 stands = [
     ("32", "grid-column: 3; grid-row: 1;", "exhibidor"),
     ("31", "grid-column: 4; grid-row: 1;", "exhibidor"),
@@ -113,184 +113,263 @@ stands = [
 
 ]
 
-# Función para obtener la siguiente prioridad disponible
-def obtener_prioridad_disponible():
-    df = pd.read_csv("preregistro.csv")
-    usados, expirados = [], []
-
-    # Usuarios que ya reservaron
-    if os.path.exists("reserva_stands.csv"):
-        usados = pd.read_csv("reserva_stands.csv")['email'].tolist()
-
-    # Usuarios cuyo turno expiró
-    if os.path.exists("expirados.csv"):
-        expirados = pd.read_csv("expirados.csv")['email'].tolist()
-
-    # Filtra los que no han participado aún
-    df = df[~df['email'].isin(usados + expirados)]
-    return df['orden_prioridad'].min() if not df.empty else None
-
-# Ruta principal: ingreso del correo
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        email = request.form['email'].strip().lower()
-
-        # Ya participó y reservó
-        if os.path.exists("reserva_stands.csv"):
-            df_reserva = pd.read_csv("reserva_stands.csv")
-            if email in df_reserva['email'].values:
-                stand = df_reserva[df_reserva['email'] == email]['stand'].values[0]
-                return render_template("ya_escogiste.html", stand=stand)
-
-        # Ya participó pero expiró su turno
-        if os.path.exists("expirados.csv"):
-            df_exp = pd.read_csv("expirados.csv")
-            if email in df_exp['email'].values:
-                return render_template("expirado_espera.html", modo="reintento")
-
-        # Busca el correo en el preregistro
-        df = pd.read_csv("preregistro.csv")
-        df['email'] = df['email'].str.strip().str.lower()
-        user = df[df['email'] == email]
-
-        if user.empty:
-            return render_template("index.html", error="Correo no registrado.")
-
-        prioridad_usuario = int(user['orden_prioridad'].values[0])
-        return redirect(url_for('espera', email=email, prioridad_usuario=prioridad_usuario))
-
     return render_template('index.html')
 
-# Pantalla de espera hasta que llegue su turno
-@app.route('/espera')
-def espera():
-    email = request.args.get('email')
-    prioridad_usuario = int(request.args.get('prioridad_usuario'))
-    prioridad_actual = obtener_prioridad_disponible()
+@app.route('/formulario')
+def formulario():
+    return render_template("formulario.html")
 
-    # Si es su turno, lo redirige al plano
-    if prioridad_usuario == prioridad_actual:
-        if 'start_time' not in session or session.get('email') != email:
-            session['start_time'] = int(datetime.now().timestamp() * 1000)
-        session['email'] = email
-        return redirect(url_for('plano'))
+@app.route('/guardar_datos_cliente', methods=['POST'])
+def guardar_datos_cliente():
+    nombre = request.form.get('nombre', '').strip()
+    empresa = request.form.get('empresa', '').strip()
+    email = request.form.get('email', '').strip().lower()
+    celular = request.form.get('celular', '').strip()
+    pais = request.form.get('pais', '').strip()
 
-    # Si no es su turno, sigue esperando
-    return render_template('espera.html', email=email, prioridad_usuario=prioridad_usuario, prioridad_actual=prioridad_actual)
+    if not all([nombre, empresa, email, celular, pais]):
+        flash("Todos los campos son obligatorios.")
+        return redirect(url_for('formulario'))
 
-# Pantalla del plano de stands (selección)
+    if os.path.exists("reserva_stands.csv"):
+        df = pd.read_csv("reserva_stands.csv")
+        fila = df[df['Email'].str.strip().str.lower() == email]
+
+        if not fila.empty:
+            empresa_existente = fila.iloc[0]['Empresa']
+            stands = fila[['stand1', 'stand2']].values.flatten()
+            stands = [str(s).replace('.0', '') for s in stands if pd.notna(s)]
+            return render_template("ya_escogiste.html", stands=stands, empresa=empresa_existente)
+
+    session['cliente'] = {
+        'nombre': nombre,
+        'empresa': empresa,
+        'email': email,
+        'celular': celular,
+        'pais': pais,
+        'inicio': int(datetime.now().timestamp() * 1000)
+    }
+
+    return redirect(url_for('plano'))
+
+
+
 @app.route('/plano', methods=['GET', 'POST'])
 def plano():
-    email = session.get('email')
-    start_time = session.get('start_time')
+    cliente = session.get('cliente')
+    if not cliente:
+        return redirect(url_for('formulario'))
 
-    if not start_time or not email:
-        return redirect(url_for('index'))
+    email = cliente.get('email')
+    start_time = cliente.get('inicio')
 
-    # Carga los stands reservados
-    df_reserva = pd.read_csv("reserva_stands.csv") if os.path.exists("reserva_stands.csv") else pd.DataFrame(columns=["email", "stand"])
+    # Crear archivo con columnas correctas si no existe
+    if not os.path.exists("reserva_stands.csv"):
+        columnas = ["Nombre", "Empresa", "Email", "Celular", "Pais", "stand1", "stand2", "Hora"]
+        pd.DataFrame(columns=columnas).to_csv("reserva_stands.csv", index=False)
 
-    # Si ya reservó, no puede volver a hacerlo
-    if email in df_reserva['email'].values:
-        stand = df_reserva[df_reserva['email'] == email]['stand'].values[0]
-        return render_template("ya_escogiste.html", stand=stand)
+    # Leer siempre como string para evitar errores como "38.0"
+    df = pd.read_csv("reserva_stands.csv", dtype=str)
 
-    reservados = df_reserva['stand'].tolist()
+    # Verificar si ya tiene reservas
+    fila = df[df['Email'].str.strip().str.lower() == email]
+    if not fila.empty:
+        seleccionados = fila[['stand1', 'stand2']].dropna(axis=1).values.flatten().tolist()
+        return render_template("ya_escogiste.html", stands=seleccionados)
 
-    # POST: Confirmación del stand
+    # Stands reservados por usuarios
+    reservados = df[['stand1', 'stand2']].values.flatten().tolist()
+    reservados = [str(s).strip().replace('.0', '') for s in reservados if pd.notna(s)]
+
+    # Agregar por defecto los stands de tipo patrocinador y auspiciador
+    for nombre, _, tipo in stands:
+        if tipo in ["patrocinador", "auspiciador"]:
+            reservados.append(nombre)
+
+    # Eliminar duplicados
+    reservados = list(set(reservados))
+
+
     if request.method == 'POST':
-        stand = request.form['stand'].strip()
+        seleccion = request.form.get('stands', '').strip()
+        nuevos = [s.strip() for s in seleccion.split(',') if s.strip()]
+        if not nuevos or len(nuevos) > 2:
+            return "Error: Selección inválida."
 
-        if stand in reservados:
-            return f"El stand {stand} ya fue reservado."
+        if any(n in reservados for n in nuevos):
+            return "Uno o más stands ya han sido reservados. Intenta nuevamente."
 
-        # Guarda la reserva
-        nueva_reserva = pd.DataFrame([[email, stand]], columns=["email", "stand"])
-        nueva_reserva.to_csv("reserva_stands.csv", mode='a', header=not os.path.exists("reserva_stands.csv"), index=False)
+        # Guardar la nueva fila como texto explícitamente
+        nueva_fila = {
+            "Nombre": cliente['nombre'],
+            "Empresa": cliente['empresa'],
+            "Email": cliente['email'],
+            "Celular": cliente['celular'],
+            "Pais": cliente['pais'],
+            "Hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "stand1": str(nuevos[0]) if len(nuevos) >= 1 else '',
+            "stand2": str(nuevos[1]) if len(nuevos) == 2 else ''
+        }
 
-        # Envío de correo de confirmación
+        df.loc[len(df)] = nueva_fila
+        df.to_csv("reserva_stands.csv", index=False)
+
         try:
-            msg = Message("Confirmación de reserva de stand", recipients=[email])
-            msg.body = f"Has reservado exitosamente el stand {stand}."
+            asunto = "🎫 Confirmación de reserva AVEM 2025"
+            remitente = "RESERVAS APA <no-responder@apa.org.pe>"
+
+            cuerpo_html = f"""
+            <html>
+            <body>
+                <p>Hola <strong>{cliente['nombre']}</strong>,</p>
+
+                <p>Gracias por registrarte en <strong>AVEM 2025</strong>. Esta es la confirmación de tu participación:</p>
+
+                <ul>
+                    <li><strong>📌 Empresa:</strong> {cliente['empresa']}</li>
+                    <li><strong>📧 Email:</strong> {cliente['email']}</li>
+                    <li><strong>📱 Celular:</strong> {cliente['celular']}</li>
+                    <li><strong>🌎 País:</strong> {cliente['pais']}</li>
+                </ul>
+
+                <p><strong>🟦 Stands reservados:</strong> {', '.join(nuevos)}</p>
+
+                <p>Nuestro equipo se pondrá en contacto contigo con los próximos pasos.</p>
+
+                <p>Saludos,<br>Equipo AVEM</p>
+
+                <br>
+                <img src="cid:footer_img" style="max-width: 600px; width: 100%; margin-top: 30px;" alt="Footer AVEM" />
+            </body>
+            </html>
+            """
+
+            msg = Message(subject=asunto,
+                        sender=remitente,
+                        recipients=[cliente['email']])
+            msg.html = cuerpo_html
+
+            # Leer la imagen y adjuntarla como parte del HTML
+            ruta_img = os.path.join(app.root_path, 'static', 'footer-apa.png')
+            if os.path.exists(ruta_img):
+                with open(ruta_img, 'rb') as f:
+                    img_data = f.read()
+
+                msg.attach(
+                    filename='footer-apa.png',
+                    content_type='image/png',
+                    data=img_data,
+                    disposition='inline',
+                    headers={'Content-ID': '<footer_img>'}  # ✅ Diccionario en lugar de lista
+                )
+
             mail.send(msg)
+
         except Exception as e:
             print("Error al enviar correo:", e)
 
-        return render_template('finalizado.html', stand=stand)
 
-    return render_template(
-        'plano.html',
-        email=email,
-        tiempo=TIEMPO_LIMITE_MINUTOS,
-        reservados=reservados,
-        stands=stands,
-        tiempo_milisegundos=TIEMPO_LIMITE_MINUTOS * 60 * 1000,
-        start_time=start_time
-    )
+        session.clear()
+        return render_template('finalizado.html', stand=', '.join(nuevos))
 
-# Ruta cuando un usuario deja expirar su tiempo
-@app.route('/expirar', methods=['POST'])
-def expirar():
-    email = session.get('email')
-    if not email:
-        return '/', 200
+    return render_template('plano.html',
+                           email=email,
+                           tiempo=TIEMPO_LIMITE_MINUTOS,
+                           reservados=reservados,
+                           stands=stands,
+                           cliente=cliente,
+                           tiempo_milisegundos=TIEMPO_LIMITE_MINUTOS * 60 * 1000,
+                           start_time=start_time)
 
-    df_reserva = pd.read_csv("reserva_stands.csv") if os.path.exists("reserva_stands.csv") else pd.DataFrame(columns=["email", "stand"])
 
-    # Si no reservó, lo marca como expirado
-    if email not in df_reserva['email'].values:
-        df_exp = pd.read_csv("expirados.csv") if os.path.exists("expirados.csv") else pd.DataFrame(columns=['email'])
-        if email not in df_exp['email'].values:
-            df_exp = pd.concat([df_exp, pd.DataFrame([{'email': email}])], ignore_index=True)
-            df_exp.to_csv("expirados.csv", index=False)
 
-    session.clear()
-    return '/expirado_espera?modo=expirado', 200
+@app.route('/estado_stands')
+def estado_stands():
+    reservados = []
 
-# Página cuando el turno ha expirado
-@app.route('/expirado_espera')
-def expirado_espera():
-    modo = request.args.get('modo', 'expirado')
-    return render_template("expirado_espera.html", modo=modo)
+    if os.path.exists("reserva_stands.csv"):
+        # Leer siempre como texto para evitar 38.0
+        df = pd.read_csv("reserva_stands.csv", dtype=str)
+        cols = [col.lower() for col in df.columns]
 
-# Descarga de archivo CSV con reservas
-@app.route('/descargar_csv')
-def descargar_csv():
-    ruta = 'reserva_stands.csv'
-    return send_file(ruta, as_attachment=True) if os.path.exists(ruta) else ("Archivo no encontrado", 404)
+        if 'stand1' in cols and 'stand2' in cols:
+            reservados = df[['stand1', 'stand2']].values.flatten()
+        elif 'stand' in cols:
+            reservados = df['stand'].values
 
-# Verificación AJAX para saber si un stand está disponible
+        # Limpiar y asegurar que todos sean texto
+        reservados = [str(s).strip() for s in reservados if pd.notna(s)]
+
+    return jsonify(reservados)
+
+
 @app.route('/verificar_disponibilidad/<stand>')
 def verificar_disponibilidad(stand):
     stand = stand.strip()
     if os.path.exists("reserva_stands.csv"):
-        df = pd.read_csv("reserva_stands.csv")
-        if stand in df['stand'].values:
-            return jsonify({'disponible': False})
+        df = pd.read_csv("reserva_stands.csv", dtype=str)
+        if 'stand1' in df.columns and 'stand2' in df.columns:
+            reservados = df[['stand1', 'stand2']].values.flatten()
+            reservados = [str(s).strip() for s in reservados if pd.notna(s)]
+            if stand in reservados:
+                return jsonify({'disponible': False})
     return jsonify({'disponible': True})
 
-# Devuelve la lista de stands reservados para actualización en tiempo real
-@app.route('/estado_stands')
-def estado_stands():
-    reservados = []
-    if os.path.exists("reserva_stands.csv"):
-        df = pd.read_csv("reserva_stands.csv")
-        reservados = df['stand'].tolist()
-    return jsonify(reservados)
 
-# Panel de administración
+
+@app.route('/descargar_csv')
+def descargar_csv():
+    if os.path.exists("reserva_stands.csv"):
+        return send_file("reserva_stands.csv", as_attachment=True)
+    return "Archivo no encontrado", 404
+
+
 @app.route('/admin')
 def admin():
-    filtro_tipo = request.args.get('tipo')  # filtro opcional por tipo
+    filtro_tipo = request.args.get('tipo')
+    
+    if os.path.exists("reserva_stands.csv"):
+        df = pd.read_csv("reserva_stands.csv")
+    else:
+        df = pd.DataFrame(columns=["Email", "stand1", "stand2"])
 
-    # Carga reservas existentes
-    df = pd.read_csv("reserva_stands.csv") if os.path.exists("reserva_stands.csv") else pd.DataFrame(columns=["email", "stand"])
+    # Extraer lista de stands reservados
+    reservados = []
+    for col in ['stand1', 'stand2']:
+        if col in df.columns:
+            reservados.extend(
+                df[col]
+                .dropna()
+                .astype(str)
+                .str.strip()
+                .str.replace(r'\.0$', '', regex=True)
+                .tolist()
+            )
 
-    # Clasificación de tipo de stand según su nombre
+    # Agregar por defecto los stands de tipo patrocinador y auspiciador
+    for nombre, _, tipo in stands:
+        if tipo in ["patrocinador", "auspiciador"]:
+            reservados.append(nombre)
+
+    # Eliminar duplicados
+    reservados = list(set(reservados))
+
+
+    # Preparar dataframe para estadísticas
+    columnas_presentes = [col for col in ['stand1', 'stand2'] if col in df.columns]
+    if columnas_presentes:
+        df_melt = df.melt(id_vars=['Email'], value_vars=columnas_presentes,
+                          var_name='col', value_name='stand')
+        df_melt.dropna(subset=['stand'], inplace=True)
+        df_melt['stand'] = df_melt['stand'].astype(str).str.strip()
+    else:
+        df_melt = pd.DataFrame(columns=['Email', 'stand'])
+
+    # Clasificar tipo de stand
     def clasificar(stand):
-        stand = str(stand).strip()
-        if stand in ['A','B','C','D','E','F','G','H','I']:
+        if stand in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']:
             return 'Patrocinador'
         elif stand.startswith('A') and stand[1:].isdigit():
             return 'Auspiciador'
@@ -298,31 +377,26 @@ def admin():
             return 'Premium'
         return 'Exhibidor'
 
-    df['tipo'] = df['stand'].apply(clasificar)
+    df_melt['tipo'] = df_melt['stand'].apply(clasificar)
 
-    # Filtro activo desde la interfaz
+    # Aplicar filtro si corresponde
     if filtro_tipo:
-        df = df[df['tipo'] == filtro_tipo]
-
-    reservados = df['stand'].tolist()
+        df_melt = df_melt[df_melt['tipo'] == filtro_tipo]
 
     # Conteo por tipo
-    conteo = df['tipo'].value_counts().to_dict()
+    conteo = df_melt['tipo'].value_counts().to_dict()
     for tipo in ['Exhibidor', 'Premium', 'Auspiciador', 'Patrocinador']:
         conteo.setdefault(tipo, 0)
 
-    # Renderiza el panel con filtros, estadísticas y lista de reservas
-    return render_template(
-        "admin.html",
-        reservados=reservados,
-        stands=stands,
-        conteo=conteo,
-        total_reservas=len(df),
-        filtro_tipo=filtro_tipo,
-        stats=conteo,
-        reservas=df.to_dict(orient='records')
-    )
+    return render_template("admin.html",
+                           reservados=reservados,
+                           stands=stands,
+                           conteo=conteo,
+                           total_reservas=len(df_melt),
+                           filtro_tipo=filtro_tipo,
+                           stats=conteo,
+                           reservas=df_melt.to_dict(orient='records'))
 
-# Ejecutar servidor local si se ejecuta directamente
+
 if __name__ == '__main__':
     app.run(debug=True)
