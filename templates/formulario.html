@@ -101,20 +101,11 @@
       {% endif %}
     {% endwith %}
     <form method="POST" action="{{ url_for('guardar_datos_cliente') }}">
-      <label for="nombre">Nombre completo</label>
-      <input type="text" name="nombre" required>
-
-      <label for="empresa">Empresa</label>
-      <input type="text" name="empresa" required>
-
-      <label for="email">Email</label>
-      <input type="email" name="email" required>
-
-      <label for="celular">Celular</label>
-      <input type="text" name="celular" required>
-
-      <label for="pais">País</label>
-      <input type="text" name="pais" required>
+      <input type="text" name="nombre" placeholder="Nombre completo" required>
+      <input type="text" name="empresa" placeholder="Empresa" required>
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="text" name="celular" placeholder="Celular" required>
+      <input type="text" name="pais" placeholder="País" required>
 
       <button type="submit">Siguiente</button>
     </form>

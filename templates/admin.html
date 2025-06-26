@@ -6,8 +6,11 @@
   <title>Panel de Administración</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      background-image: url("{{ url_for('static', filename='fondo.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       padding: 20px;
       display: flex;
       gap: 40px;
@@ -47,7 +50,14 @@
       opacity: 0.6;
       border: 1px dashed #888;
     }
-
+    
+    .nodo-distribucion, .separador, .ingreso {
+      width: 50%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+    
     .sidebar {
       width: 250px;
       background: #ffffff;
@@ -123,6 +133,7 @@
       background: #218838;
     }
 
+
     @media (max-width: 768px) {
       body {
         flex-direction: column;
@@ -170,6 +181,12 @@
   <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
     <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
   </div>
+  <div style="grid-column: 5 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="ingreso" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="ingreso" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
 </div>
 
 <!-- Panel lateral -->
@@ -193,12 +210,13 @@
 
   <div class="stats">
     <h4>Estadísticas</h4>
-    <p><strong>Total reservas:</strong> {{ total_reservas }}</p>
-    <p><strong>Exhibidor:</strong> {{ conteo.get('Exhibidor', 0) }}</p>
-    <p><strong>Premium:</strong> {{ conteo.get('Premium', 0) }}</p>
-    <p><strong>Auspiciador:</strong> {{ conteo.get('Auspiciador', 0) }}</p>
-    <p><strong>Patrocinador:</strong> {{ conteo.get('Patrocinador', 0) }}</p>
+    <p><strong>Total reservas:</strong> <span id="stat-total">{{ total_reservas }}</span></p>
+    <p><strong>Exhibidor:</strong> <span id="stat-exhibidor">{{ conteo.get('Exhibidor', 0) }}</span></p>
+    <p><strong>Premium:</strong> <span id="stat-premium">{{ conteo.get('Premium', 0) }}</span></p>
+    <p><strong>Auspiciador:</strong> <span id="stat-auspiciador">{{ conteo.get('Auspiciador', 0) }}</span></p>
+    <p><strong>Patrocinador:</strong> <span id="stat-patrocinador">{{ conteo.get('Patrocinador', 0) }}</span></p>
   </div>
+
 
   <form method="get" action="{{ url_for('descargar_csv') }}">
     <button type="submit" class="download">📥 Descargar CSV</button>
@@ -237,6 +255,28 @@
 
   setInterval(actualizarReservadosAdmin, 3000);  // Actualiza cada 3 segundos
   actualizarReservadosAdmin(); // Primera llamada al cargar
+
+  function actualizarEstadisticas() {
+  fetch("/estadisticas_stands")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("stat-total").textContent = data.total;
+      document.getElementById("stat-exhibidor").textContent = data.Exhibidor;
+      document.getElementById("stat-premium").textContent = data.Premium;
+      document.getElementById("stat-auspiciador").textContent = data.Auspiciador;
+      document.getElementById("stat-patrocinador").textContent = data.Patrocinador;
+    });
+}
+
+setInterval(() => {
+  actualizarReservadosAdmin();
+  actualizarEstadisticas();
+}, 3000);
+
+actualizarEstadisticas();
+
+
+
 </script>
 
 </body>

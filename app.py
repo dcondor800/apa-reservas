@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_file, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, jsonify, flash, Response
 from flask_mail import Mail, Message
 from datetime import datetime
 from email.mime.image import MIMEImage
@@ -168,7 +168,7 @@ def plano():
     # Crear archivo con columnas correctas si no existe
     if not os.path.exists("reserva_stands.csv"):
         columnas = ["Nombre", "Empresa", "Email", "Celular", "Pais", "stand1", "stand2", "Hora"]
-        pd.DataFrame(columns=columnas).to_csv("reserva_stands.csv", index=False, encoding='utf-8')
+        pd.DataFrame(columns=columnas).to_csv("reserva_stands.csv", index=False, encoding='utf-8-sig')
 
     # Leer siempre como string para evitar errores como "38.0"
     df = pd.read_csv("reserva_stands.csv", dtype=str)
@@ -214,7 +214,7 @@ def plano():
         }
 
         df.loc[len(df)] = nueva_fila
-        df.to_csv("reserva_stands.csv", index=False, encoding='utf-8')
+        df.to_csv("reserva_stands.csv", index=False, encoding='utf-8-sig')
 
 
         try:
@@ -336,9 +336,23 @@ def verificar_disponibilidad(stand):
 
 @app.route('/descargar_csv')
 def descargar_csv():
-    if os.path.exists("reserva_stands.csv"):
-        return send_file("reserva_stands.csv", as_attachment=True)
-    return "Archivo no encontrado", 404
+    if not os.path.exists("reserva_stands.csv"):
+        return "Archivo no encontrado", 404
+
+    with open("reserva_stands.csv", "r", encoding="utf-8") as f:
+        contenido = f.read()
+
+    # Agregar BOM para compatibilidad con Excel
+    contenido_bom = '\ufeff' + contenido
+
+    return Response(
+        contenido_bom,
+        mimetype="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": "attachment; filename=reserva_stands.csv"
+        }
+    )
+
 
 
 @app.route('/admin')
@@ -411,6 +425,50 @@ def admin():
                            filtro_tipo=filtro_tipo,
                            stats=conteo,
                            reservas=df_melt.to_dict(orient='records'))
+
+
+@app.route('/estadisticas_stands')
+def estadisticas_stands():
+    if os.path.exists("reserva_stands.csv"):
+        df = pd.read_csv("reserva_stands.csv", dtype=str)
+    else:
+        return jsonify({
+            "total": 0,
+            "Exhibidor": 0,
+            "Premium": 0,
+            "Auspiciador": 0,
+            "Patrocinador": 0
+        })
+
+    columnas_presentes = [col for col in ['stand1', 'stand2'] if col in df.columns]
+    if columnas_presentes:
+        df_melt = df.melt(id_vars=['Email'], value_vars=columnas_presentes,
+                          var_name='col', value_name='stand')
+        df_melt.dropna(subset=['stand'], inplace=True)
+        df_melt['stand'] = df_melt['stand'].astype(str).str.strip()
+    else:
+        df_melt = pd.DataFrame(columns=['stand'])
+
+    def clasificar(stand):
+        if stand in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']:
+            return 'Patrocinador'
+        elif stand.startswith('A') and stand[1:].isdigit():
+            return 'Auspiciador'
+        elif stand.startswith('Exp'):
+            return 'Premium'
+        return 'Exhibidor'
+
+    df_melt['tipo'] = df_melt['stand'].apply(clasificar)
+    conteo = df_melt['tipo'].value_counts().to_dict()
+
+    for tipo in ['Exhibidor', 'Premium', 'Auspiciador', 'Patrocinador']:
+        conteo.setdefault(tipo, 0)
+
+    return jsonify({
+        "total": len(df_melt),
+        **conteo
+    })
+
 
 
 if __name__ == '__main__':

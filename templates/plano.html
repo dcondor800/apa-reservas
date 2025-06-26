@@ -13,13 +13,11 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      min-height: 100vh;
-      margin: 0;
       padding: 20px;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      }
+      gap: 40px;
+      flex-wrap: wrap;
+    }
 
     .grid {
       display: grid;
@@ -152,6 +150,13 @@
       font-size: 14px;
     }
 
+    .nodo-distribucion, .separador, .ingreso {
+      width: 50%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
     .resumen-cliente {
       background-color: #f0f4f8;
       border: 1px solid #ccc;
@@ -270,6 +275,29 @@
       {{ stand }}
     </div>
   {% endfor %}
+
+  <!-- Elementos decorativos -->
+  <div style="grid-column: 10 / span 2; grid-row: 5 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 9 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 10 / span 2; grid-row: 13 / span 3; display: flex; justify-content: center;">
+    <img class="separador" src="{{ url_for('static', filename='separador.png') }}" alt="">
+  </div>
+  <div style="grid-column: 5 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 17 / span 3; display: flex; justify-content: center;">
+    <img class="nodo-distribucion" src="{{ url_for('static', filename='circulo.png') }}" alt="">
+  </div>
+  <div style="grid-column: 5 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="ingreso" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
+  <div style="grid-column: 14 / span 3; grid-row: 20 / span 3; display: flex; justify-content: center;">
+    <img class="ingreso" src="{{ url_for('static', filename='ingreso.png') }}" alt="">
+  </div>
 </div>
 
 <script>
