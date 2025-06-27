@@ -224,7 +224,7 @@ def plano():
             cuerpo_html = f"""
             <html>
             <body style="font-family: Arial, sans-serif; font-size: 15px; color: #2A3082; line-height: 1.6;">
-                <p>Estimado {cliente['nombre']}:</p>
+                <p>Estimado(a) {cliente['nombre']}:</p>
 
                 <p>
                 Nos complace informarte que <strong style="color: #2A3082;">hemos registrado exitosamente la compra de tu espacio</strong> 
