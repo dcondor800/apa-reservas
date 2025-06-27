@@ -224,13 +224,18 @@ def plano():
             cuerpo_html = f"""
             <html>
             <body style="font-family: Arial, sans-serif; font-size: 15px; color: #2A3082; line-height: 1.6;">
-                <p>Estimado:</p>
+                <p>Estimado {cliente['nombre']}:</p>
 
                 <p>
                 Nos complace informarte que <strong style="color: #2A3082;">hemos registrado exitosamente la compra de tu espacio</strong> 
                 para el <strong style="color: #E62B0F;">Congreso de Avicultura AVEM 2025</strong>, y queremos agradecerte por ser parte de este gran encuentro 
                 que reunirá a toda la comunidad avícola nacional e internacional, 
                 <strong>los días 12, 13 y 14 de noviembre de 2025</strong>, en el Centro de Convenciones de Lima.
+                </p>
+
+                <p>
+                👉 <strong style="color: #2A3082;">Espacio(s) reservado(s) :</strong>
+                <strong style="font-size: 18px; color: #E62B0F;">{', '.join(nuevos)}</strong>
                 </p>
 
                 <p>
