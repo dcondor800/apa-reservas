@@ -1,27 +1,27 @@
-﻿﻿﻿Nombre;Empresa;Email;Celular;Pais;stand1;stand2;Hora
-Stephanie Teevin;Gammavet;stephanie@gammavet.com;926721992;Perú;Exp9;;27/06/2025 00:50
-Eduardo Rangel;IAT;ventas2@interandean.com;937513532;Perú;19;18;27/06/2025 00:58
-Victor Hugo;VHD;info@vhdperu.com;938128831;Perú;Exp4;;27/06/2025 01:05
-Alice;Qingdao Xingyi Electronic Equipment Co;sthp.0410@icloud.com;974838904;China;Exp6;;27/06/2025 01:06
-Alessandra Bolaños;Protecno;abolanos@grupoprotecno.com;980694431;Perú;38;39;27/06/2025 01:10
-Mireya Fuentes;Grupo Corinser;mfuentes@corinser.com;998198291;Perú;23;22;27/06/2025 01:13
-Javier Cruz;Alirep;jcruz@alirepsac.com;999733229;Perú;34;35;27/06/2025 01:16
-Nelida Lizarbe;Quimicos Goicochea;nelidal@quimicosgoicochea.com;966465812;Perú;Exp1;;27/06/2025 01:23
-Stephanie Astudillo Almeyda;ASOCIACIÓN PERUANA DE AVICULTURA;stephanie.astudillo@apa.org.pe;974838904;Perú;Exp10;;27/06/2025 01:25
-Mario Chuy;MCH Equavic;ventas@equavic.com;983638691;Perú;28;27;27/06/2025 01:27
-Maria Tasayco;Bionova;mtasayco@bionova.com.pe;941731635;Perú;20;17;27/06/2025 01:30
-Cesar Gogin;Silvateam;cgogin@silvateam.com;994254977;Perú;13;;27/06/2025 01:35
-Jose Luis Armebianchi;Macana;jarmebianchi@macanasac.com;999697169;Perú;43;44;27/06/2025 01:42
-Alberto Malaga Muller;Numaq;info@rubberunionco.com;966606641;Perú;46;45;27/06/2025 01:50
-Anelise Schmid;ALS INVESTMENT SAC;aschmidt@alsperu.com;952040221;Perú;29;;27/06/2025 01:59
-Humberto Talavera;Talavera Representaciones SAC;gerencia@talaverarepresentaciones.com;998194667;Perú;8;;27/06/2025 02:04
-Claudia Apolaya;Servivet;claudia.apolaya@gmail.com;998377924;Perú;40;;27/06/2025 02:08
-Melissa Garriazo Aguilar;Laboratorios Labet;mgarriazo@laboratorioslabet.com.pe;970549938;Perú;Exp7;;27/06/2025 02:15
-Cynthya Bravo;Novagri;cynthya@novagri.pe;959468555;Perú;42;;27/06/2025 02:29
-Juan Manuel Hintze;Sumavic;jmhintze@sumavic.com;993697147;Perú;14;;27/06/2025 02:32
-Mauricio Pierre Bailly Sanche;R Trading;mbaillys@rtrading.com.pe;940255229;Perú;Exp8;;27/06/2025 02:37
-CARLOS Uzategui;Pharma-Vet Corporation SAC;carlosuzateguijo1@gmail.com;947184367;Perú;15;;27/06/2025 02:39
-Jhasmin;Promune;comercial@promune.pe;936861828;Perú;Exp5;;30/06/2025 17:31
-Ciro Cornejo;Famsum;ciro@famsun.com;942366038;Perú;Exp2;;3/07/2025 19:05
-;Grupo la Semilla de oro;supervisoradeventas@semilladeorosac.com;981449587;Perú;16;;14/07/2025 20:27
-;A&G Healthy Vet Products SAC;mario.alvarado@aygvet.com;941361277;Perú;48;49;24/07/2025 16:17
+﻿﻿﻿Nombre,Empresa,Email,Celular,Pais,stand1,stand2,Hora
+Stephanie Teevin,Gammavet,stephanie@gammavet.com,926721992,Perú,Exp9,,2025-06-27 00:50:45
+Eduardo Rangel,IAT,ventas2@interandean.com,937513532,Perú,19,18,2025-06-27 00:58:03
+Victor Hugo,VHD,info@vhdperu.com,938128831,Perú,Exp4,,2025-06-27 01:05:22
+Alice,Qingdao Xingyi Electronic Equipment Co,sthp.0410@icloud.com,974838904,China,Exp6,,2025-06-27 01:06:52
+Alessandra Bolaños,Protecno,abolanos@grupoprotecno.com,980694431,Perú,38,39,2025-06-27 01:10:30
+Mireya Fuentes,Grupo Corinser,mfuentes@corinser.com,998198291,Perú,23,22,2025-06-27 01:13:38
+Javier Cruz,Alirep,jcruz@alirepsac.com,999733229,Perú,34,35,2025-06-27 01:16:47
+Nelida Lizarbe,Quimicos Goicochea,nelidal@quimicosgoicochea.com,966465812,Perú,Exp1,,2025-06-27 01:23:58
+Stephanie Astudillo Almeyda,ASOCIACIÓN PERUANA DE AVICULTURA,stephanie.astudillo@apa.org.pe,974838904,Perú,Exp10,,2025-06-27 01:25:07
+Mario Chuy,MCH Equavic,ventas@equavic.com,983638691,Perú,28,27,2025-06-27 01:27:09
+Maria Tasayco,Bionova,mtasayco@bionova.com.pe,941731635,Perú,20,17,2025-06-27 01:30:32
+Cesar Gogin,Silvateam,cgogin@silvateam.com,994254977,Perú,13,,2025-06-27 01:35:43
+Jose Luis Armebianchi,Macana,jarmebianchi@macanasac.com,999697169,Perú,43,44,2025-06-27 01:42:11
+Alberto Malaga Muller,Numaq,info@rubberunionco.com,966606641,Perú,46,45,2025-06-27 01:50:52
+Anelise Schmid,ALS INVESTMENT SAC,aschmidt@alsperu.com,952040221,Perú,29,,2025-06-27 01:59:53
+Humberto Talavera,Talavera Representaciones SAC,gerencia@talaverarepresentaciones.com,998194667,Perú,8,,2025-06-27 02:04:07
+Claudia Apolaya,Servivet,claudia.apolaya@gmail.com,998377924,Perú,40,,2025-06-27 02:08:48
+Melissa Garriazo Aguilar,Laboratorios Labet,mgarriazo@laboratorioslabet.com.pe,970549938,Perú,Exp7,,2025-06-27 02:15:54
+Cynthya Bravo,Novagri,cynthya@novagri.pe,959468555,Perú,42,,2025-06-27 02:29:45
+Juan Manuel Hintze,Sumavic,jmhintze@sumavic.com,993697147,Perú,14,,2025-06-27 02:32:13
+Mauricio Pierre Bailly Sanche,R Trading,mbaillys@rtrading.com.pe,940255229,Perú,Exp8,,2025-06-27 02:37:32
+CARLOS Uzategui,Pharma-Vet Corporation SAC,carlosuzateguijo1@gmail.com,947184367,Perú,15,,2025-06-27 02:39:29
+Jhasmin,Promune,comercial@promune.pe,936861828,Perú,Exp5,,2025-06-30 17:31:10
+Ciro Cornejo,Famsum,ciro@famsun.com,942366038,Perú,Exp2,,2025-07-03 19:05:03
+,Grupo la Semilla de oro,supervisoradeventas@semilladeorosac.com,981449587,Perú,16,,2025-07-14 20:27:20
+,A&G Healthy Vet Products SAC,mario.alvarado@aygvet.com,941361277,Perú,48,49,2025-07-24 16:17:36
