@@ -1,11 +1,11 @@
-﻿﻿﻿﻿Nombre,Empresa,Email,Celular,Pais,stand1,stand2,Hora
+﻿﻿﻿﻿﻿Nombre,Empresa,Email,Celular,Pais,stand1,stand2,Hora
 Stephanie Teevin,Gammavet,stephanie@gammavet.com,926721992,Perú,Exp9,,2025-06-27 00:50:45
 Eduardo Rangel,IAT,ventas2@interandean.com,937513532,Perú,19,18,2025-06-27 00:58:03
 Victor Hugo,VHD,info@vhdperu.com,938128831,Perú,Exp4,,2025-06-27 01:05:22
 Alice,Qingdao Xingyi Electronic Equipment Co,sthp.0410@icloud.com,974838904,China,Exp6,,2025-06-27 01:06:52
 Alessandra Bolaños,Protecno,abolanos@grupoprotecno.com,980694431,Perú,38,39,2025-06-27 01:10:30
 Mireya Fuentes,Grupo Corinser,mfuentes@corinser.com,998198291,Perú,23,22,2025-06-27 01:13:38
-Javier Cruz,Alirep,jcruz@alirepsac.com,999733229,Perú,34,35,2025-06-27 01:16:47
+Javier Cruz,Alirep,jcruz@alirepsac.com,999733229,Perú,35,,2025-06-27 01:16:47
 Nelida Lizarbe,Quimicos Goicochea,nelidal@quimicosgoicochea.com,966465812,Perú,Exp1,,2025-06-27 01:23:58
 Mario Chuy,MCH Equavic,ventas@equavic.com,983638691,Perú,28,27,2025-06-27 01:27:09
 Maria Tasayco,Bionova,mtasayco@bionova.com.pe,941731635,Perú,20,17,2025-06-27 01:30:32
@@ -29,3 +29,6 @@ Ciro Cornejo,Famsum,ciro@famsun.com,942366038,Perú,Exp2,,2025-07-03 19:05:03
 ,ICC,byrne@iccperu.com.pe,998177805,Perú,37,,2025-08-21 16:47:40
 ,Nieser,mf@nieser.net,981385140,Perú,9,,2025-08-22 14:45:47
 ,Qingdao Xingyi Electronic Equipment Co,wuzhou_expo@vip.163.com,974838904,China,41,,2025-08-25 16:01:32
+,Addera,jorge.villaizan@addera.pe,943511663,Perú,Exp10,,2025-08-29 15:22:15
+,Farm Import,javier.ortega@farmimport.pe,933602396,Perú,50,,2025-09-02 20:21:05
+,Primax,ncruzsacoc@primax.com,-,Perú,1,,2025-09-03 15:03:06
